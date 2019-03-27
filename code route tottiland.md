@@ -3,12 +3,12 @@
 
 ### Règle pour les déplacements sur les routes (le nombre donne la priorité) :
 1. Voie Rapide 
-  * Rabattage : Si on a la place de se rabattre (distance de sécu + vitesse max) et qu’on ne va pas à la vitesse max. Sans avancer.
-  * Avance : on fait avancer toutes les voitures de la ligne.
+   * Rabattage : Si on a la place de se rabattre (distance de sécu + vitesse max) et qu’on ne va pas à la vitesse max. Sans avancer.
+   * Avance : on fait avancer toutes les voitures de la ligne.
 2. Voie moyenne
-  * Rabattage : Si on a la place de se rabattre (distance de sécu + vitesse max) et qu’on ne va pas à la vitesse max. Sans avancer.
-  * Dépassement : Si on ne pas à notre vitesse max et qu’on ait la place de le faire (distance sécu, vitesse au niveau de la vitesse actuelle).         On fait monter puis accélérer.
-  * Avance : on fait avancer toutes les voitures de la ligne.
+   * Rabattage : Si on a la place de se rabattre (distance de sécu + vitesse max) et qu’on ne va pas à la vitesse max. Sans avancer.
+   * Dépassement : Si on ne pas à notre vitesse max et qu’on ait la place de le faire (distance sécu, vitesse au niveau de la vitesse actuelle).         On fait monter puis accélérer.
+   * Avance : on fait avancer toutes les voitures de la ligne.
 3. Voie lente
-  * Dépassement : Si on ne pas à notre vitesse max et qu’on ait la place de le faire (distance sécu, vitesse au niveau de la vitesse actuelle). On fait monter puis accélérer.
-  * Avance : on fait avancer toutes les voitures de la ligne.
+   * Dépassement : Si on ne pas à notre vitesse max et qu’on ait la place de le faire (distance sécu, vitesse au niveau de la vitesse actuelle). On fait monter puis accélérer.
+   * Avance : on fait avancer toutes les voitures de la ligne.
