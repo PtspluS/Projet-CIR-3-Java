@@ -1,5 +1,7 @@
 package generation;
 
+import java.util.ArrayList;
+
 public class main {
     public static void main(String[] args) {
         //test unitaire validés
@@ -12,5 +14,10 @@ public class main {
 
         N1.print();
         N1.printMatrixRepresentation();
+
+        City listCities []= {lille, tourcoing};
+
+        NetWork map = new NetWork(listCities,true);
+        map.print();
     }
 }

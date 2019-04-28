@@ -13,17 +13,17 @@ public abstract class Node extends Infrastructure {
         this.roads = roads;
     }
 
-    public void addRoad(Road road){
+    public void addRoad(Road road) {
         this.roads.add(road);
         System.out.print("New road added : ");
         road.print();
     }
 
-    public void removeRoad (Road road){
+    public void removeRoad(Road road) {
         try {
             this.roads.remove(road);
             System.out.println("Road perfectly remove");
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Impossible to remove the road from the list");
         }
 
