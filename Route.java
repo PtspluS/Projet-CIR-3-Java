@@ -3,21 +3,38 @@ import java.util.ArrayList;
 public class Route {
     // Les valeurs de vitesses seront estimees en km/h
 
+    // Enumeration des types de routes
+    public static enum TypeRoute {
+        DEPARTEMENTALE, NATIONALE, AUTOROUTE
+    }
+
     // Constantes
     private final double limitationVitesse; // Limitation de vitesse selon le type de route
     private final double distanceSecurite; // Distance a conserver entre les vehicules
     private final double longueur; // Longueur de la route (en km)
+    private final TypeRoute type; // Type de route
 
     // Tableaux des voies contenant les voitures
+    // Indexs : 0 - Voie Lente, 1 - Voie Moyenne, 2 - Voie Rapide
     private ArrayList< ArrayList< Voiture > > voiesAller = new ArrayList<>(); // Voies de la route dans le sens de l'aller
     private ArrayList< ArrayList< Voiture > > voiesRetour = new ArrayList<>(); // Voies de la route dans le sens du retour
 
-    public Route(String type, double longueur){
-        this.longueur = longueur;
+    // Infrastructures de depart et d'arrive
+    // private Infrastructure infraDepart;
+    // private Infrastructure infraArrive;
 
-        if(type == "Autoroute"){ // Nous fournissons 3 voies pour une autoroute dans les deux sens
+    // Getters
+    public ArrayList< ArrayList< Voiture > > getVoiesAller() { return voiesAller; }
+    public ArrayList< ArrayList< Voiture > > getVoiesRetour() { return voiesRetour; }
+
+
+    public Route(TypeRoute type, double longueur){
+        this.longueur = longueur;
+        this.type = type;
+
+        if(type == TypeRoute.AUTOROUTE){ // Nous fournissons 3 voies pour une autoroute dans les deux sens
             this.limitationVitesse = 130;
-            this.distanceSecurite = 80;
+            this.distanceSecurite = 0.100;
 
             ArrayList< Voiture > voie1A = new ArrayList<>();
             ArrayList< Voiture > voie2A = new ArrayList<>();
@@ -32,9 +49,9 @@ public class Route {
             this.voiesRetour.add(voie1R);
             this.voiesRetour.add(voie2R);
             this.voiesRetour.add(voie3R);
-        }else if(type == "Nationale"){ // Nous fournissons 2 voies pour une nationale dans les deux sens
+        }else if(type == TypeRoute.NATIONALE){ // Nous fournissons 2 voies pour une nationale dans les deux sens
             this.limitationVitesse = 110;
-            this.distanceSecurite = 70;
+            this.distanceSecurite = 0.70;
 
             ArrayList< Voiture > voie1A = new ArrayList<>();
             ArrayList< Voiture > voie2A = new ArrayList<>();
@@ -47,7 +64,7 @@ public class Route {
             this.voiesRetour.add(voie2R);
         }else{ // Nous fournissons 1 voies pour une departementale dans les deux sens
             this.limitationVitesse = 80;
-            this.distanceSecurite = 55;
+            this.distanceSecurite = 0.55;
 
             ArrayList< Voiture > voie1A = new ArrayList<>();
             ArrayList< Voiture > voie1R = new ArrayList<>();
@@ -55,26 +72,357 @@ public class Route {
             this.voiesAller.add(voie1A);
             this.voiesRetour.add(voie1R);
         }
-
     }
 
-    public boolean ajouterVoitureAller(Voiture voiture, int voie){
-        if(this.voiesAller.get(voie).get(voie).getPositionActuelle() > this.distanceSecurite){
+    public boolean ajouterVoitureAller(Voiture voiture, int voie){ // Entree d'une voiture dans le sens de l'aller
+        if(this.voiesAller.get(voie).get(0).getPositionActuelle() > this.distanceSecurite){
+            this.voiesAller.get(voie).add(0,voiture);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean ajouterVoitureRetour(Voiture voiture, int voie){ // Entree d'une voiture dans le sens du retour
+        if(this.voiesRetour.get(voie).get(0).getPositionActuelle() > this.distanceSecurite){
+            this.voiesRetour.get(voie).add(0,voiture);
+            return true;
+        }
+        return false;
+    }
+
+    public int[] voituresAlentoursPosition(ArrayList< Voiture > voie, double position){ // Retourne les indexs des voitures situes avant et apres la position donnee dans la voie demandee
+        int[] vide = {-1, -1}; // -1 == Aucune voiture
+        if(voie.size() == 0) return vide; // Si la voie est vide
+
+        for(int i = 0; i < voie.size(); i++){
+            if(voie.get(i).getPositionActuelle() > position){
+                if(i == 0){ // Si la premiere voiture est devant la position
+                    int[] retour = {-1, i};
+                    return retour;
+                }else{ // Si la position est entre 2 voitures differentes
+                    int[] retour = {i-1, i};
+                    return retour;
+                }
+            }
+        }
+        // else
+
+        // if(voie.size() != 0) // Si la derniere voiture est derriere la position
+        int[] retour = {voie.size()-1, -1};
+        return retour;
+    }
+
+    public boolean depassement(int indexVoiture, int indexVoie, ArrayList< ArrayList< Voiture > > voies){ // Nous verifions si nous pouvons depasser et nous le faisons au possible
+        Voiture voiture = voies.get(indexVoie).get(indexVoiture);
+        int[] encadrement = voituresAlentoursPosition(voies.get(indexVoie + 1), voiture.getPositionActuelle());
+        ArrayList< Voiture > nouvelleVoie = voies.get(indexVoie + 1);
+
+        boolean placeArriere = false; // Si la voiture de derriere est assez loin pour pouvoir depasse (2 * distanceSecurite)
+        boolean placeAvant = false; // Si la voiture de devant est assez loin pour nous permettre de passer (1 * distanceSecurite)
+
+        if(encadrement[0] == -1){
+            placeArriere = true;
+        }else if(nouvelleVoie.get(encadrement[0]).getPositionActuelle() < voiture.getPositionActuelle() - 2 * this.distanceSecurite){
+            placeArriere = true;
+        }
+        if(encadrement[1] == -1){
+            placeAvant = true;
+        }else if(nouvelleVoie.get(encadrement[1]).getPositionActuelle() > voiture.getPositionActuelle() + this.distanceSecurite){
+            placeAvant = true;
+        }
+
+        if(placeArriere && placeAvant){
+            voies.get(indexVoie).remove(indexVoiture);
+            if(encadrement[1] == -1){ // Si aucune voiture plus loin dans la voie, nous ajoutons la voiture a la fin de celle-ci
+                nouvelleVoie.add(voiture);
+            }else{ // Sinon, juste avant celle de devant ( son ancienne position dans la liste donc)
+                nouvelleVoie.add(encadrement[1], voiture);
+            }
+
+            return true; // Reussite de depassement
+        }
+        return false; // Echec de depassement
+    }
+
+    public boolean rabattage(int indexVoiture, int indexVoie, ArrayList< ArrayList< Voiture > > voies){ // Nous verifions si nous pouvons nous rabattre et nous le faisons au possible
+        Voiture voiture = voies.get(indexVoie).get(indexVoiture);
+        int[] encadrement = voituresAlentoursPosition(voies.get(indexVoie - 1), voiture.getPositionActuelle());
+
+        ArrayList< Voiture > nouvelleVoie = voies.get(indexVoie - 1);
+
+        boolean placeArriere = false; // Si la voiture de derriere est assez loin pour pouvoir se rabattre (1 * distanceSecurite) (Nous allons techniquement plus vite)
+        boolean placeAvant = false; // Si la voiture de devant est assez loin pour que cela soit utile de se rabattre (4 * distanceSecurite) (Il serait peu utile de se rabattre pour depasser des la prochaine frame, malgre tout, cela peut quand meme arriver)
+
+        if(encadrement[0] == -1){
+            placeArriere = true;
+        }else if(nouvelleVoie.get(encadrement[0]).getPositionActuelle() < voiture.getPositionActuelle() - this.distanceSecurite){
+            placeArriere = true;
+        }
+        if(encadrement[1] == -1){
+            placeAvant = true;
+        }else if(nouvelleVoie.get(encadrement[1]).getPositionActuelle() - distanceSecurite > voiture.getPositionActuelle() + voiture.distanceFreinMax()){
+            placeAvant = true;
+        }
+
+        if(placeArriere && placeAvant){
+            voies.get(indexVoie).remove(indexVoiture);
+            if(encadrement[1] == -1){ // Si aucune voiture plus loin dans la voie, nous ajoutons la voiture a la fin de celle-ci
+                nouvelleVoie.add(voiture);
+            }else{ // Sinon, juste avant celle de devant ( son ancienne position dans la liste donc)
+                nouvelleVoie.add(encadrement[1], voiture);
+            }
+
+            return true; // Reussite de rabattage
+        }
+        return false; // Echec de rabattage
+    }
+
+    public void acceleration(double temps){ // Fait avancer les voiture sur une voie en fonction des obstacles devant elles (autres vehicules et/ou infrastructures)
+        for(int i = 0; i < this.voiesAller.size(); i++){
+            for(int j = this.voiesAller.get(i).size() - 1; j >= 0; j--){
+                Voiture voituret = this.voiesAller.get(i).get(j);
+
+                // Voiture la plus avancee de la voie
+                if(j == this.voiesAller.get(i).size() - 1) {
+                    // Ralentissement de fin de route
+                    if (voituret.getPositionActuelle() + voituret.getVitesseActuelle() * temps / 3600 + voituret.getAccelerationActuelle() * Math.pow(temps/3600,2) / 2 >= this.longueur) {
+                        voituret.setAccelerationActuelle(0);
+                        voituret.setVitesseActuelle(0);
+                        voituret.setPositionActuelle(this.longueur);
+                    } else if (voituret.getPositionActuelle() + voituret.getVitesseActuelle() * temps / 3600 + voituret.getAccelerationActuelle() * Math.pow(temps/3600,2) / 2  >= this.longueur - voituret.distanceFreinMax()) {
+                        double tempsRestant = ( (this.longueur - voituret.distanceFreinMax()) - voituret.getPositionActuelle() ) * 3600 / voituret.getVitesseActuelle(); // Temps restant apres etre arrive pile au bord de la zone de ralentissement
+
+                        if (tempsRestant > 0) { // Si nous n'etions pas deja dans la zone de ralentissement
+                            voituret.setPositionActuelle(this.longueur - voituret.distanceFreinMax() + voituret.getDeccelerationMax() * Math.pow(tempsRestant/3600,2) / 2 + voituret.getVitesseActuelle() * tempsRestant / 3600);
+                            voituret.setVitesseActuelle(voituret.getVitesseActuelle() + tempsRestant / 3600 * voituret.getDeccelerationMax());
+                            voituret.setAccelerationActuelle(voituret.getDeccelerationMax());
+                        }else{ // Si nous etions deja dans la zone
+                            voituret.setPositionActuelle(voituret.getPositionActuelle() + voituret.getDeccelerationMax() * Math.pow(temps/3600,2) / 2 + voituret.getVitesseActuelle() * temps / 3600);
+                            voituret.setVitesseActuelle(voituret.getVitesseActuelle() + temps / 3600 * voituret.getDeccelerationMax());
+                        }
+
+                    } else { // Si nous n'arrivons pas en fin de route a la prochaine frame
+                        voituret.setAccelerationActuelle(voituret.getAccelerationMax());
+                        voituret.setVitesseActuelle(voituret.getVitesseActuelle() + temps / 3600 * voituret.getAccelerationActuelle());
+
+                        if(voituret.getVitesseActuelle() + temps / 3600 * voituret.getAccelerationActuelle() >= this.limitationVitesse || voituret.getVitesseActuelle() + temps / 3600 * voituret.getAccelerationActuelle() >= voituret.getVitesseMax()){
+                            voituret.setAccelerationActuelle(0);
+                            voituret.setVitesseActuelle(this.limitationVitesse > voituret.getVitesseMax() ? voituret.getVitesseMax() : this.limitationVitesse); // Tronque a la vitesse maximale au besoin
+                        }
+
+                        voituret.setPositionActuelle(voituret.getPositionActuelle() + voituret.getVitesseActuelle() * temps / 3600 + voituret.getAccelerationActuelle() * Math.pow(temps/3600,2) / 2);
+
+                    }
+
+                    // Si ce n'est pas la voiture la plus avancee de la voie
+                } else {
+                    Voiture voituret2 = this.voiesAller.get(i).get(j+1); // Voiture de devant
+                    // On calcule notre prochaine position theorique
+                    double prochainePositionTheorique;
+                    double prochaineVitesseTheorique;
+
+                    if(voituret.getVitesseActuelle() + temps / 3600 * voituret.getAccelerationActuelle() >= this.limitationVitesse || voituret.getVitesseActuelle() + temps / 3600 * voituret.getAccelerationActuelle() >= voituret.getVitesseMax()) { // Si l'acceleration va nous faire depasser la limite de vitesse
+                        prochainePositionTheorique = voituret.getPositionActuelle() + (this.limitationVitesse > voituret.getVitesseMax() ? voituret.getVitesseMax() : this.limitationVitesse) * temps / 3600;
+                        prochaineVitesseTheorique = (this.limitationVitesse > voituret.getVitesseMax() ? voituret.getVitesseMax() : this.limitationVitesse);
+
+                    } else { // Si on peut encore accelerer avant d'atteindre la limite de vitesse
+                        prochainePositionTheorique = voituret.getPositionActuelle() + voituret.getVitesseActuelle() * temps / 3600 + voituret.getAccelerationActuelle() * Math.pow(temps / 3600, 2) / 2;
+                        prochaineVitesseTheorique = voituret.getVitesseActuelle() + temps / 3600 * voituret.getAccelerationActuelle();
+                    }
+
+                    // Si nous allons arriver derriere une voiture, nous nous mettons a sa vitesse et une position de securite (c'est bien de ne pas foncer dans les autres)
+                    if(prochainePositionTheorique > voituret2.getPositionActuelle() - this.distanceSecurite){
+                        voituret.setPositionActuelle(voituret2.getPositionActuelle() - this.distanceSecurite);
+                        voituret.setVitesseActuelle(voituret2.getVitesseActuelle());
+                        voituret.setAccelerationActuelle(0);
+                        System.out.println("PEH ----- " + voituret.distanceFreinMax());
+                        // Si nous arrivons derriere une voiture de plus loin, nous freinons pour arriver a son niveau a sa vitesse
+                    }else if(prochainePositionTheorique + voituret.distanceFreinMax() >= voituret2.getPositionActuelle() - this.distanceSecurite){
+                        // Nous n'avons pas un temps assez grand pour "depasser" (Techniquement rentrer dans la voiture comme au dessus) la voiture, nous agencons donc notre vehicule avec une acceleration lui permettant de ralentir
+                        double diffVitesse = voituret2.getVitesseActuelle() - voituret.getVitesseActuelle(); // Difference de vitesse entre les deux voitures
+                        double diffPosition = voituret2.getPositionActuelle() - voituret.getPositionActuelle(); // Difference de position entre les deux voitures
+
+                        // On applique la decceleration
+                        voituret.setAccelerationActuelle( (Math.pow(diffVitesse,2)/2 + voituret.getVitesseActuelle() * diffVitesse) / diffPosition );
+                        // On avance avec la meme vitesse d'origine
+                        voituret.setPositionActuelle(voituret.getPositionActuelle() + voituret.getAccelerationActuelle() * Math.pow(temps/3600,2) / 2 + voituret.getVitesseActuelle() * temps / 3600);
+                        // On applique notre nouvelle vitesse
+                        voituret.setVitesseActuelle(voituret.getVitesseActuelle() + temps / 3600 * voituret.getAccelerationActuelle());
+
+                        // Si aucune voiture ne nous gene pour accelerer : On enclenche la vitesse supraluminique! (Surement limite a 130km/h mais c'est deja un bon debut)
+                    }else{
+                        if(voituret.getVitesseActuelle() < this.limitationVitesse && voituret.getVitesseActuelle() < voituret.getVitesseMax()){ // Acceleration
+                            voituret.setAccelerationActuelle(voituret.getAccelerationMax());
+
+                            voituret.setVitesseActuelle(prochaineVitesseTheorique);
+                            voituret.setPositionActuelle(prochainePositionTheorique);
+
+                        } else { // Nous avons deja atteint notre maximal
+                            voituret.setAccelerationActuelle(0);
+                            voituret.setVitesseActuelle(prochaineVitesseTheorique);
+                            voituret.setPositionActuelle(prochainePositionTheorique);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void avancerFrame(double temps){ // Nous changeons l'etat des voitures pour arriver a la prochaine frame (le temps est le pas temporel entre chaque frame, si celui-ci est de 2 secondes, nos voitures aurons une nouvelle position de 2 secondes plus tard)
+        if(this.type == TypeRoute.DEPARTEMENTALE){
+            // Une seule voie, on avance tout le monde
+            this.acceleration(temps);
+
+        }else if(this.type == TypeRoute.NATIONALE){
+            // Voie Aller Moyenne Rabattage
+            for(int i = this.voiesAller.get(1).size() - 1; i >= 0; i--){ // On essaie toujours de se rabattre en premier
+                this.rabattage(i, 1, this.voiesAller);
+            }
+            // Voie Aller Lente Depassement
+            for(int i = this.voiesAller.get(0).size() - 2; i >= 0; i--){ // Si on peut aller plus vite, on depasse
+                Voiture voituret = this.voiesAller.get(0).get(i);
+                Voiture voituret2 = this.voiesAller.get(0).get(i+1);
+                if(voituret.getVitesseActuelle() < this.limitationVitesse && !voituret.capaciteMaximale() && voituret.getPositionActuelle() + voituret.distanceFreinMax() >= voituret2.getPositionActuelle() - this.distanceSecurite && voituret.getPositionActuelle() < this.longueur - this.distanceSecurite * 3) {
+                    /*
+                    D'abord on verifie si nous allons moins vite que la limitation de vitesse
+                    Ensuite si nous allons a notre vitesse maximale
+                    Enfin si nous ne sommes pas simplement en train d'accelerer (si l'accelerationActuelle est inferieure 0 alors nous pouvons possiblement aller plus vite)
+                    Si nous ne sommes pas dans la voie de ralentissement (3*distanceSecurite avant les infrastructures)
+                     */
+                    this.depassement(i, 0, this.voiesAller);
+                }
+            }
+
+
+            // Voie Retour Moyenne Rabattage
+            for(int i = this.voiesRetour.get(1).size() - 1; i >= 0; i--){ // On essaie toujours de se rabattre en premier
+                this.rabattage(i, 1, this.voiesRetour);
+            }
+            // Voie Retour Lente Depassement
+            for(int i = this.voiesRetour.get(0).size() - 2; i >= 0; i--){ // Si on peut aller plus vite, on depasse
+                Voiture voituret = this.voiesRetour.get(0).get(i);
+                Voiture voituret2 = this.voiesRetour.get(0).get(i+1);
+                if(voituret.getVitesseActuelle() < this.limitationVitesse && !voituret.capaciteMaximale() && voituret.getPositionActuelle() + voituret.distanceFreinMax() >= voituret2.getPositionActuelle() - this.distanceSecurite && voituret.getPositionActuelle() < this.longueur - this.distanceSecurite * 3) {
+                    /*
+                    D'abord on verifie si nous allons moins vite que la limitation de vitesse
+                    Ensuite si nous allons a notre vitesse maximale
+                    Enfin si nous ne sommes pas simplement en train d'accelerer (si l'accelerationActuelle est inferieure 0 alors nous pouvons possiblement aller plus vite)
+                    Si nous ne sommes pas dans la voie de ralentissement (3*distanceSecurite avant les infrastructures)
+                     */
+                    this.depassement(i, 0, this.voiesRetour);
+                }
+            }
+
+
+            // Accelerations dans toutes les voies
+            this.acceleration(temps);
+
+        }else if(this.type == TypeRoute.AUTOROUTE){
+            // Voie Aller Moyenne Rabattage // D'abord la moyenne pour eviter un rabattage de 2 voies ... d'un coup
+            for(int i = this.voiesAller.get(1).size() - 1; i >= 0; i--){ // On essaie toujours de se rabattre en premier
+                this.rabattage(i, 1, this.voiesAller);
+            }
+            // Voie Aller Rapide Rabattage
+            for(int i = this.voiesAller.get(2).size() - 1; i >= 0; i--){ // On essaie toujours de se rabattre en premier
+                this.rabattage(i, 2, this.voiesAller);
+            }
+
+            // Voie Aller Moyenne Depassement // Idem : D'abord la moyenne pour eviter un depassement de 2 voies d'un seul coup
+            for(int i = this.voiesAller.get(1).size() - 2; i >= 0; i--){ // Si on peut aller plus vite, on depasse
+                Voiture voituret = this.voiesAller.get(1).get(i);
+                Voiture voituret2 = this.voiesAller.get(1).get(i+1);
+                if(voituret.getVitesseActuelle() < this.limitationVitesse && !voituret.capaciteMaximale() && voituret.getPositionActuelle() + voituret.distanceFreinMax() >= voituret2.getPositionActuelle() - this.distanceSecurite && voituret.getPositionActuelle() < this.longueur - this.distanceSecurite * 3) {
+                    /*
+                    D'abord on verifie si nous allons moins vite que la limitation de vitesse
+                    Ensuite si nous allons a notre vitesse maximale
+                    Enfin si nous ne sommes pas simplement en train d'accelerer (si l'accelerationActuelle est inferieure 0 alors nous pouvons possiblement aller plus vite)
+                    Si nous ne sommes pas dans la voie de ralentissement (3*distanceSecurite avant les infrastructures)
+                     */
+                    this.depassement(i, 1, this.voiesAller);
+                }
+            }
+            // Voie Aller Lente Depassement
+            for(int i = this.voiesAller.get(0).size() - 2; i >= 0; i--){ // Si on peut aller plus vite, on depasse
+                Voiture voituret = this.voiesAller.get(0).get(i);
+                Voiture voituret2 = this.voiesAller.get(0).get(i+1);
+                if(voituret.getVitesseActuelle() < this.limitationVitesse && !voituret.capaciteMaximale() && voituret.getPositionActuelle() + voituret.distanceFreinMax() >= voituret2.getPositionActuelle() - this.distanceSecurite && voituret.getPositionActuelle() < this.longueur - this.distanceSecurite * 3) {
+                    /*
+                    D'abord on verifie si nous allons moins vite que la limitation de vitesse
+                    Ensuite si nous allons a notre vitesse maximale
+                    Enfin si nous ne sommes pas simplement en train d'accelerer (si l'accelerationActuelle est inferieure 0 alors nous pouvons possiblement aller plus vite)
+                    Si nous ne sommes pas dans la voie de ralentissement (3*distanceSecurite avant les infrastructures)
+                     */
+                    this.depassement(i, 0, this.voiesAller);
+                }
+            }
+
+
+
+            // Voie Retour Moyenne Rabattage // D'abord la moyenne pour eviter un rabattage de 2 voies ... d'un coup
+            for(int i = this.voiesRetour.get(1).size() - 1; i >= 0; i--){ // On essaie toujours de se rabattre en premier
+                this.rabattage(i, 1, this.voiesRetour);
+            }
+            // Voie Retour Rapide Rabattage
+            for(int i = this.voiesRetour.get(2).size() - 1; i >= 0; i--){ // On essaie toujours de se rabattre en premier
+                this.rabattage(i, 2, this.voiesRetour);
+            }
+
+            // Voie Retour Moyenne Depassement // Idem : D'abord la moyenne pour eviter un depassement de 2 voies d'un seul coup
+            for(int i = this.voiesRetour.get(1).size() - 2; i >= 0; i--){ // Si on peut aller plus vite, on depasse
+                Voiture voituret = this.voiesRetour.get(1).get(i);
+                Voiture voituret2 = this.voiesRetour.get(1).get(i+1);
+                if(voituret.getVitesseActuelle() < this.limitationVitesse && !voituret.capaciteMaximale() && voituret.getPositionActuelle() + voituret.distanceFreinMax() >= voituret2.getPositionActuelle() - this.distanceSecurite && voituret.getPositionActuelle() < this.longueur - this.distanceSecurite * 3) {
+                    /*
+                    D'abord on verifie si nous allons moins vite que la limitation de vitesse
+                    Ensuite si nous allons a notre vitesse maximale
+                    Enfin si nous ne sommes pas simplement en train d'accelerer (si l'accelerationActuelle est inferieure 0 alors nous pouvons possiblement aller plus vite)
+                    Si nous ne sommes pas dans la voie de ralentissement (3*distanceSecurite avant les infrastructures)
+                     */
+                    this.depassement(i, 1, this.voiesRetour);
+                }
+            }
+            // Voie Retour Lente Depassement
+            for(int i = this.voiesRetour.get(0).size() - 2; i >= 0; i--){ // Si on peut aller plus vite, on depasse
+                Voiture voituret = this.voiesRetour.get(0).get(i);
+                Voiture voituret2 = this.voiesRetour.get(0).get(i+1);
+                if(voituret.getVitesseActuelle() < this.limitationVitesse && !voituret.capaciteMaximale() && voituret.getPositionActuelle() + voituret.distanceFreinMax() >= voituret2.getPositionActuelle() - this.distanceSecurite && voituret.getPositionActuelle() < this.longueur - this.distanceSecurite * 3) {
+                    /*
+                    D'abord on verifie si nous allons moins vite que la limitation de vitesse
+                    Ensuite si nous allons a notre vitesse maximale
+                    Enfin si nous ne sommes pas simplement en train d'accelerer (si l'accelerationActuelle est inferieure 0 alors nous pouvons possiblement aller plus vite)
+                    Si nous ne sommes pas dans la voie de ralentissement (3*distanceSecurite avant les infrastructures)
+                     */
+                    this.depassement(i, 0, this.voiesRetour);
+                }
+            }
+
+
+            // Accelerations dans toutes les voies
+            this.acceleration(temps);
+        }
+    }
+
+    // ------------------------------------------------
+    // FONCTIONS DEBUGS
+    // ------------------------------------------------
+
+    public void debugAjouterAller(Voiture voiture, int voie, double position){ // Placement d'une voiture dans une voie d'aller, et a une certaine position
+        int[] indexs = voituresAlentoursPosition(this.voiesAller.get(voie), position);
+        voiture.setPositionActuelle(position);
+        if(indexs[1] == -1){
             this.voiesAller.get(voie).add(voiture);
-            return true;
+        }else{
+            this.voiesAller.get(voie).add(indexs[1], voiture);
         }
-        return false;
     }
 
-    public boolean ajouterVoitureRetour(Voiture voiture, int voie){
-        if(this.voiesRetour.get(voie).get(voie).getPositionActuelle() > this.distanceSecurite){
+    public void debugAjouterRetour(Voiture voiture, int voie, double position){ // Placement d'une voiture dans une voie de retour, et a une certaine position
+        int[] indexs = voituresAlentoursPosition(this.voiesRetour.get(voie), position);
+        voiture.setPositionActuelle(position);
+        if(indexs[1] == -1){
             this.voiesRetour.get(voie).add(voiture);
-            return true;
+        }else{
+            this.voiesRetour.get(voie).add(indexs[1], voiture);
         }
-        return false;
-    }
-
-    public void avancerFrame(double temps){
-
     }
 }
