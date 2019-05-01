@@ -4,20 +4,20 @@ import java.util.ArrayList;
 
 public class main {
     public static void main(String[] args) {
-        //test unitaire validés
-        City lille = new City(2,1,"Lille");
-        City tourcoing = new City(3,-1,"Tourcoing");
-        Road N1 = new Road(lille,tourcoing);
+        //test unitaire valides
+        City lille = new City(2,2,"Lille");
+        City tourcoing = new City(2,-2,"Tourcoing");
+        City roubaix = new City (-2,2, "Roubaix");
+        City halluin = new City (-2,-2,"Halluin");
 
-        lille.print();
-        tourcoing.print();
+        NetWork map = null;
 
-        N1.print();
-        N1.printMatrixRepresentation();
+        try {
+            map = new NetWork(true , lille,tourcoing,roubaix,halluin);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        City listCities []= {lille, tourcoing};
-
-        NetWork map = new NetWork(listCities,true);
         map.print();
     }
 }
