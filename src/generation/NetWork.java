@@ -110,14 +110,14 @@ public class NetWork {
              c1 = a.getEquationCarthesienneReduite()[2]/a.getEquationCarthesienneReduite()[1];
         } else {
              m1 = a.getEquationCarthesienneReduite()[1];
-             c1 = a.getEquationCarthesienneReduite()[2];
+             c1 = a.getEquationCarthesienneReduite()[0];
         }
         if(b.getEquationCarthesienneReduite()[1] != 0) {
              m2 = b.getEquationCarthesienneReduite()[0] / b.getEquationCarthesienneReduite()[1];
              c2 = b.getEquationCarthesienneReduite()[2] / b.getEquationCarthesienneReduite()[1];
         } else {
              m2 = b.getEquationCarthesienneReduite()[1];
-             c2 = b.getEquationCarthesienneReduite()[2];
+             c2 = b.getEquationCarthesienneReduite()[0];
         }
 
         if(m1 == m2){
@@ -131,6 +131,8 @@ public class NetWork {
                 double [] xTab = {a.getStart().getX(),a.getEnd().getX(),b.getStart().getX(),b.getEnd().getX()};
                 double [] yTab = {a.getStart().getY(),a.getEnd().getY(),b.getStart().getY(),b.getEnd().getY()};
                 if(x> arrayMin(xTab) && x< arrayMax(xTab) && y>arrayMin(yTab) && y<arrayMax(yTab)) {//on verifie que l'intersection se trouve bien sur les routes entre les villes et pas sur les droites qui les portent
+                    i.addRoad(a);
+                    i.addRoad(b);
                     return i;
                 }
             } else {
@@ -146,7 +148,17 @@ public class NetWork {
             i = this.possibleNewIntersection(a,b);
             i.setName("Intersection");
             if(i.getX() != NaN && i.getY() != NaN) {
-                this.cross.add(i);
+                if(this.cross.size()==0){
+                    this.cross.add(i);
+                }
+                for(Intersection elt : this.cross){
+                    if(elt.getX() != i.getX() && elt.getY() != i.getY()){
+                        this.cross.add(i);
+                    } else if (elt.getX()==i.getX() && elt.getY() != i.getY()){
+                        elt.addRoad(a);
+                        elt.addRoad(b);
+                    }
+                }
             }
         }
     }
