@@ -7,4 +7,12 @@ public class Intersection extends Node {
         this.y = y;
     }
 
+    @Override
+    public void print(){
+        System.out.println("Position of "+ this.getName() +" = ("+this.x+","+this.y+")");
+        System.out.print("\t");
+        for (Road r : this.getRoads()) {
+            r.print();
+        }
+    }
 }
