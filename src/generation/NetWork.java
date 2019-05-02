@@ -45,7 +45,7 @@ public class NetWork {
             for (City a : this.cities ) {
                 for (City b : this.cities){
                     if(a!=b){
-                        Road r = new Road(a,b);
+                        Road r = new Road(a,b, Road.TypeRoute.DEPARTEMENTALE);
                         r.setName("N"+Integer.toString(nbRoad));
                         this.roads.add(r);
                         nbRoad++;
@@ -163,10 +163,10 @@ public class NetWork {
         }
     }
 
-    private void addNewRoad(City a, City b){//verifie que la route ne croise pas une autre route et si c'est le cas genere le croisement
+    private void addNewRoad(City a, City b, Road.TypeRoute t){//verifie que la route ne croise pas une autre route et si c'est le cas genere le croisement
         City start = this.cities.get(this.cities.indexOf(a));
         City end = this.cities.get(this.cities.indexOf(b));
-        Road r = new Road(start,end);
+        Road r = new Road(start,end,t);
         this.roads.add(r);
         this.cities.get(this.cities.indexOf(start)).addRoad(r);
         for (Road road : this.roads) {//check if there is a intersection between 2 roads
@@ -174,47 +174,14 @@ public class NetWork {
         }
     }
 
-    public void addRoad(City a, City b){
+    public void addRoad(City a, City b,Road.TypeRoute t){
         try{
-            this.addNewRoad(a,b);
+            this.addNewRoad(a,b,t);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void addRoad(City a, City b,String name){
-        try{
-            this.addNewRoad(a,b);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void addRoad(String a, String b, String name){
-        try{
-            City start = new City();
-            City end = new City();
-            for(City c : this.cities){
-                if(c.getName()==a){
-                    start.setName(c.getName());
-                    start.setX(c.getX());
-                    start.setY(c.getY());
-                    start.setRoads(c.getRoads());
-                }
-                else if(c.getName()==b){
-                    end.setName(c.getName());
-                    end.setX(c.getX());
-                    end.setY(c.getY());
-                    end.setRoads(c.getRoads());
-                }
-            }
-            Road r = new Road(start,end);
-            this.roads.add(r);
-            this.cities.get(this.cities.indexOf(start)).addRoad(r);
-        }catch (Exception e ){
-            e.printStackTrace();
-        }
-    }
 
     public void print(){
         System.out.println("This network is composed by "+this.cities.size()+" cities which are :");
