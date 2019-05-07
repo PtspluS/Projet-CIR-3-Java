@@ -34,7 +34,7 @@ public class main extends Application{
         City paris = new City(40,190,"Paris");
         City marseille = new City(100,5,"Marseille");
         City amien = new City(151,40,"Tourcoing");
-        NetWork map = new NetWork(true ,tourcoing,paris,marseille,amien);
+        NetWork map = new NetWork(true ,lille,tourcoing,paris,marseille,amien);
         int windowweight=1000;
         int windoheight=800;
         double mapweight=200;
@@ -51,16 +51,22 @@ public class main extends Application{
         draw.drawroad(map);
         draw.drawcity(map);
 
-      for(int i=0;i<10;i++) {
-          Voiture car=new Voiture(Math.random()*5+10,Math.random()*30+50);
-          map.getRoads().get((int)(Math.round(Math.random()*(map.getRoads().size()-1)))).debugAjouterAller(car, 0, i);
-      }
+
+
         root.getChildren().add(draw);
 
         new AnimationTimer()
         {
+            public int delay = 0;
         public void handle(long currentNanoTime)
         {
+            if(delay==10) {
+                delay=0;
+                Voiture car = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 50);
+                map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterAller(car, 0, 0);
+            }else{
+                delay++;
+            }
             for(int j=0;j<map.getRoads().size();j++) {
                 map.getRoads().get(j).avancerFrame(5);
                 draw.removecar();

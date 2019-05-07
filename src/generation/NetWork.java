@@ -45,7 +45,7 @@ public class NetWork {
             for (City a : this.cities ) {
                 for (City b : this.cities){
                     if(a!=b){
-                        Road r = new Road(a,b, Road.TypeRoute.DEPARTEMENTALE);
+                        Road r = new Road(a,b, Road.TypeRoute.NATIONALE);
                         r.setName("N"+Integer.toString(nbRoad));
                         this.roads.add(r);
                         nbRoad++;
