@@ -15,5 +15,6 @@ public class main {
         map = new NetWork(true , lille,tourcoing,roubaix,halluin);
         map.print();
 
+        Export.exportNetwok(map,"test.txt");
     }
 }

@@ -1,6 +1,6 @@
 package generation;
 
-public abstract class Infrastructure {
+public abstract class Infrastructure implements java.io.Serializable{
     protected double x;
     protected double y;
     protected String name;

@@ -81,4 +81,32 @@ public class NetWorkTest {
         }
 
     }
+
+    @Test
+    public final void exportFile(){
+        City lille = new City(2,2,"Lille");
+        City tourcoing = new City(2,1,"tourcoing");
+
+        final String filePathName = "unitTest.ser";
+
+        NetWork map = new NetWork(true, lille, tourcoing);
+
+        Export.exportNetwok(map,filePathName);
+
+        NetWork ret = Export.importNetwork(filePathName);
+
+        if(ret == null){
+            fail("ret is null");
+        } else {
+            for (int i = 0; i < map.getRoads().size(); i++) {
+                if(!map.getRoads().get(i).equals(ret.getRoads().get(i))){
+                    fail("ret not equals to map");
+                }
+            }
+        }
+
+        map.print();
+        System.out.println("-------------------------");
+        ret.print();
+    }
 }

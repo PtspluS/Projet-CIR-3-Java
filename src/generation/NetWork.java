@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static java.lang.Double.NaN;
 
-public class NetWork {
+public class NetWork implements java.io.Serializable{
     private ArrayList<City> cities = new ArrayList<>();
     private ArrayList<Intersection> cross = new ArrayList<>();
     private ArrayList<Road> roads = new ArrayList<>();

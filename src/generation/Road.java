@@ -2,7 +2,7 @@ package generation;
 
 import java.util.ArrayList;
 
-public class Road extends Infrastructure {
+public class Road extends Infrastructure implements java.io.Serializable{
     private Node start;
     private Node end;
     private double[] matrixRepresentation ;
