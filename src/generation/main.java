@@ -12,11 +12,8 @@ public class main {
 
         NetWork map = null;
 
-        try {
-            map = new NetWork(true , lille,tourcoing,roubaix,halluin);
-            map.print();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        map = new NetWork(true , lille,tourcoing,roubaix,halluin);
+        map.print();
+
     }
 }
