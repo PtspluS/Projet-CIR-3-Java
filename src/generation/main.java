@@ -30,15 +30,15 @@ public class main extends Application{
 
     public void start(Stage primaryStage) {
         City lille = new City(0,0,"Lille");
-        City tourcoing = new City(500,1000,"Tourcoing");
-        City paris = new City(400,1900,"Paris");
-        City marseille = new City(1000,50,"Marseille");
-        City amien = new City(1551,400,"Tourcoing");
-        NetWork map = new NetWork(true , lille,tourcoing,paris);
+        City tourcoing = new City(50,100,"Tourcoing");
+        City paris = new City(40,190,"Paris");
+        City marseille = new City(100,5,"Marseille");
+        City amien = new City(151,40,"Tourcoing");
+        NetWork map = new NetWork(true ,tourcoing,paris,marseille,amien);
         int windowweight=1000;
         int windoheight=800;
-        double mapweight=2000;
-        double mapheight=2000;
+        double mapweight=200;
+        double mapheight=200;
 
 
 
@@ -46,21 +46,26 @@ public class main extends Application{
         Group root = new Group();
         Scene scene = new Scene(root, windowweight, windoheight, Color.LIGHTGREEN);
         primaryStage.setScene(scene);
-        Canvas canvas = new Canvas(windowweight,  windoheight);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+
         Drawing draw=new Drawing(windowweight,windoheight,mapweight ,mapheight);
-        draw.drawroad(map,gc);
-        draw.drawcity(map,gc);
-        Voiture car=new Voiture(10,60);
-        map.getRoads().get(1).debugAjouterAller(car,0,300);
+        draw.drawroad(map);
+        draw.drawcity(map);
+
+      for(int i=0;i<10;i++) {
+          Voiture car=new Voiture(Math.random()*5+10,Math.random()*30+50);
+          map.getRoads().get((int)(Math.round(Math.random()*(map.getRoads().size()-1)))).debugAjouterAller(car, 0, i);
+      }
         root.getChildren().add(draw);
 
         new AnimationTimer()
         {
         public void handle(long currentNanoTime)
         {
-            map.getRoads().get(1).avancerFrame(10);
-            draw.drawcar(map,gc);
+            for(int j=0;j<map.getRoads().size();j++) {
+                map.getRoads().get(j).avancerFrame(5);
+                draw.removecar();
+                draw.drawcar(map);
+            }
 
         }
     }.start();
