@@ -91,7 +91,7 @@ public class NetWorkTest {
 
         NetWork map = new NetWork(true, lille, tourcoing);
 
-        Export.exportNetwok(map,filePathName);
+        Export.exportNetwork(map,filePathName);
 
         NetWork ret = Export.importNetwork(filePathName);
 

@@ -56,7 +56,7 @@ public class main extends Application {
 
         new AnimationTimer()//gestion de l'animation
         {
-            public int delay = 0;
+            private int delay = 0;
 
             public void handle(long currentNanoTime) {
                 if (delay == 1) {
