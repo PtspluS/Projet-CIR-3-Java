@@ -32,4 +32,13 @@ public abstract class Infrastructure {
     public void print(){
         System.out.println("Position of "+ this.getName() +" = ("+this.x+","+this.y+")");
     }
+
+
+    public boolean equals(Infrastructure a){
+        if(this.x != a.getX() && this.y != a.getY()){
+            return false;
+        }else {
+            return true;
+        }
+    }
 }

@@ -36,21 +36,51 @@ public class NetWork {
         }
     }
 
+    public NetWork (ArrayList<City> city){
+        this.cities.addAll(city);
+    }
+
     public NetWork (boolean autoCompletRoads, City ... city){//genere une carte ou chaque ville est reliee a chaque autre ville
+        double xMax = 0, yMax = 0;
         for (City c: city  ) {
+            if(c.getX()>xMax){
+                xMax = c.getX();
+            }
+            if(c.getY()>yMax){
+                yMax = c.getY();
+            }
             this.cities.add(c);
         }
+        this.sizeX = xMax;
+        this.sizeY = yMax;
         if(autoCompletRoads){
             int nbRoad = 0;
             for (City a : this.cities ) {
                 for (City b : this.cities){
-                    if(a!=b){
-                        Road r = new Road(a,b, Road.TypeRoute.DEPARTEMENTALE);
-                        r.setName("N"+Integer.toString(nbRoad));
-                        this.roads.add(r);
-                        nbRoad++;
-                    }
+                    if(a!=b) {
+                        if (!areLink(a,b)) {
+                            int tmp=(int)(Math.random()*3);
+                            Road r;
+                           switch (tmp){
+                               case 0:
+                                   r= new Road(a, b, Road.TypeRoute.DEPARTEMENTALE );
+                                   break;
 
+                               case 1:
+                                   r= new Road(a, b, Road.TypeRoute.NATIONALE );
+                                   break;
+
+                               default:
+                                   r= new Road(a, b, Road.TypeRoute.AUTOROUTE );
+                                   break;
+
+                            }
+
+                            r.setName("N" + nbRoad);
+                            this.roads.add(r);
+                            nbRoad++;
+                        }
+                    }
                 }
             }
             for (Road a : this.roads){
@@ -61,6 +91,15 @@ public class NetWork {
                 }
             }
         }
+    }
+
+    private boolean areLink(Node a, Node b){
+        for (Road r: this.roads ) {
+            if ((r.getStart()==(a) || r.getEnd()==(a)) && (r.getStart()==(b) || r.getEnd()==(b))){
+                return true;
+            }
+        }
+        return false;
     }
 
     public ArrayList<City> getCities() {
@@ -104,20 +143,20 @@ public class NetWork {
     }
 
     private Intersection possibleNewIntersection (Road a, Road b) {
-        double m1 =0, m2 = 0, c1 =0,c2=0;
+        double m1 =0, m2 = 0, c1 =0, c2=0;
         if(a.getEquationCarthesienneReduite()[1] != 0) {
-             m1 = a.getEquationCarthesienneReduite()[0] / a.getEquationCarthesienneReduite()[1];
-             c1 = a.getEquationCarthesienneReduite()[2]/a.getEquationCarthesienneReduite()[1];
+            m1 = a.getEquationCarthesienneReduite()[0] / a.getEquationCarthesienneReduite()[1];
+            c1 = a.getEquationCarthesienneReduite()[2]/a.getEquationCarthesienneReduite()[1];
         } else {
-             m1 = a.getEquationCarthesienneReduite()[1];
-             c1 = a.getEquationCarthesienneReduite()[0];
+            m1 = a.getEquationCarthesienneReduite()[2]/ a.getEquationCarthesienneReduite()[0];
+            c1 = a.getEquationCarthesienneReduite()[2];
         }
         if(b.getEquationCarthesienneReduite()[1] != 0) {
-             m2 = b.getEquationCarthesienneReduite()[0] / b.getEquationCarthesienneReduite()[1];
-             c2 = b.getEquationCarthesienneReduite()[2] / b.getEquationCarthesienneReduite()[1];
+            m2 = b.getEquationCarthesienneReduite()[0] / b.getEquationCarthesienneReduite()[1];
+            c2 = b.getEquationCarthesienneReduite()[2] / b.getEquationCarthesienneReduite()[1];
         } else {
-             m2 = b.getEquationCarthesienneReduite()[1];
-             c2 = b.getEquationCarthesienneReduite()[0];
+            m2 = b.getEquationCarthesienneReduite()[2]/ b.getEquationCarthesienneReduite()[0];
+            c2 = b.getEquationCarthesienneReduite()[2];
         }
 
         if(m1 == m2){
@@ -125,9 +164,13 @@ public class NetWork {
         }
         else {
             double x = (c2-c1)/(m1-m2);
+            if(m1-m2 == 0){
+                x = c2-c1;
+            }
             double y = m1*x+c1;
+            x= -x;
             Intersection i = new Intersection(x, y);
-            if(i != a.getStart() && i != a.getEnd() && i != b.getStart() && i != b.getEnd()) {//on verifie que l'interection n'est pas un ville
+            if(!i.equals(a.getStart()) && !i.equals(a.getEnd()) && !i.equals(b.getStart()) && !i.equals(b.getEnd())) {//on verifie que l'interection n'est pas un ville
                 double [] xTab = {a.getStart().getX(),a.getEnd().getX(),b.getStart().getX(),b.getEnd().getX()};
                 double [] yTab = {a.getStart().getY(),a.getEnd().getY(),b.getStart().getY(),b.getEnd().getY()};
                 if(x> arrayMin(xTab) && x< arrayMax(xTab) && y>arrayMin(yTab) && y<arrayMax(yTab)) {//on verifie que l'intersection se trouve bien sur les routes entre les villes et pas sur les droites qui les portent
@@ -144,6 +187,7 @@ public class NetWork {
 
     private void addNewIntersection (Road a, Road b){
         Intersection i;
+        boolean inTab = false;
         if (this.possibleNewIntersection(a,b)!=null){
             i = this.possibleNewIntersection(a,b);
             i.setName("Intersection");
@@ -152,12 +196,14 @@ public class NetWork {
                     this.cross.add(i);
                 }
                 for(Intersection elt : this.cross){
-                    if(elt.getX() != i.getX() && elt.getY() != i.getY()){
-                        this.cross.add(i);
-                    } else if (elt.getX()==i.getX() && elt.getY() != i.getY()){
+                    if(i.equals(elt)){//si les intersections sont confondus alors on rajoute juste les routes sur celle qui existe deja
                         elt.addRoad(a);
                         elt.addRoad(b);
+                        inTab = true;
                     }
+                }
+                if(!inTab){
+                    this.cross.add(i);
                 }
             }
         }
@@ -170,7 +216,7 @@ public class NetWork {
         this.roads.add(r);
         this.cities.get(this.cities.indexOf(start)).addRoad(r);
         for (Road road : this.roads) {//check if there is a intersection between 2 roads
-                this.addNewIntersection(r, road);
+            this.addNewIntersection(r, road);
         }
     }
 
@@ -200,6 +246,7 @@ public class NetWork {
             System.out.print("\t");
             i.print();
         }
+        System.out.println("This network had "+this.cross.size()+" intersection");
     }
 
     public static double arrayMin (double [] tab){
