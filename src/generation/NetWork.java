@@ -59,7 +59,23 @@ public class NetWork implements java.io.Serializable{
                 for (City b : this.cities){
                     if(a!=b) {
                         if (!areLink(a,b)) {
-                            Road r = new Road(a, b, Road.TypeRoute.DEPARTEMENTALE);
+                            int tmp=(int)(Math.random()*3);
+                            Road r;
+                           switch (tmp){
+                               case 0:
+                                   r= new Road(a, b, Road.TypeRoute.DEPARTEMENTALE );
+                                   break;
+
+                               case 1:
+                                   r= new Road(a, b, Road.TypeRoute.NATIONALE );
+                                   break;
+
+                               default:
+                                   r= new Road(a, b, Road.TypeRoute.AUTOROUTE );
+                                   break;
+
+                            }
+
                             r.setName("N" + nbRoad);
                             this.roads.add(r);
                             nbRoad++;
@@ -129,15 +145,15 @@ public class NetWork implements java.io.Serializable{
     private Intersection possibleNewIntersection (Road a, Road b) {
         double m1 =0, m2 = 0, c1 =0, c2=0;
         if(a.getEquationCarthesienneReduite()[1] != 0) {
-             m1 = a.getEquationCarthesienneReduite()[0] / a.getEquationCarthesienneReduite()[1];
-             c1 = a.getEquationCarthesienneReduite()[2]/a.getEquationCarthesienneReduite()[1];
+            m1 = a.getEquationCarthesienneReduite()[0] / a.getEquationCarthesienneReduite()[1];
+            c1 = a.getEquationCarthesienneReduite()[2]/a.getEquationCarthesienneReduite()[1];
         } else {
              m1 = a.getEquationCarthesienneReduite()[2]/ a.getEquationCarthesienneReduite()[0];
              c1 = a.getEquationCarthesienneReduite()[2];
         }
         if(b.getEquationCarthesienneReduite()[1] != 0) {
-             m2 = b.getEquationCarthesienneReduite()[0] / b.getEquationCarthesienneReduite()[1];
-             c2 = b.getEquationCarthesienneReduite()[2] / b.getEquationCarthesienneReduite()[1];
+            m2 = b.getEquationCarthesienneReduite()[0] / b.getEquationCarthesienneReduite()[1];
+            c2 = b.getEquationCarthesienneReduite()[2] / b.getEquationCarthesienneReduite()[1];
         } else {
              m2 = b.getEquationCarthesienneReduite()[2]/ b.getEquationCarthesienneReduite()[0];
              c2 = b.getEquationCarthesienneReduite()[2];
@@ -200,7 +216,7 @@ public class NetWork implements java.io.Serializable{
         this.roads.add(r);
         this.cities.get(this.cities.indexOf(start)).addRoad(r);
         for (Road road : this.roads) {//check if there is a intersection between 2 roads
-                this.addNewIntersection(r, road);
+            this.addNewIntersection(r, road);
         }
     }
 
