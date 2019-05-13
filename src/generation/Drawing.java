@@ -64,28 +64,43 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
             line.setEndX(scaleX(r.getEnd().getX()));
             line.setEndY(scaleY(r.getEnd().getY()));
             line.setSmooth(true);
-            switch (r.getType()){
+            Line milieu= new Line(line.getStartX(),line.getStartY(),line.getEndX(),line.getEndY());
+            milieu.setSmooth(true);
+            milieu.setStroke(Color.BLACK);
+            milieu.setStrokeWidth(1);
+            Line bordure= new Line(line.getStartX(),line.getStartY(),line.getEndX(),line.getEndY());
+            bordure.setSmooth(true);
+
+            switch (r.getType()){//ON dessine des routes differentes pour chaque route differentes
                 case DEPARTEMENTALE:
-                    line.setStroke(Color.BROWN);
-                    line.setStrokeWidth(1);
+                    bordure.setStroke(Color.BLACK);
+                    bordure.setStrokeWidth(5);
+
+                    line.setStroke(Color.LIGHTGREEN);
+                    line.setStrokeWidth(4);
                     break;
 
                 case NATIONALE:
+                    bordure.setStroke(Color.BLACK);
+                    bordure.setStrokeWidth(9);
                     line.setStroke(Color.YELLOW);
-                    line.setStrokeWidth(3);
+                    line.setStrokeWidth(8);
                     break;
 
                 case AUTOROUTE:
+                    bordure.setStroke(Color.BLACK);
+                    bordure.setStrokeWidth(13);
                     line.setStroke(Color.RED);
-                    line.setStrokeWidth(5);
+                    line.setStrokeWidth(11);
                     break;
 
 
             }
 
 
-
+            road.getChildren().add(bordure);
             road.getChildren().add(line);
+            road.getChildren().add(milieu);
 
         }
 
@@ -93,18 +108,39 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
     public void drawcar(NetWork map){// Fonction de dessin des voitures
         this.car= new Group();//groupe des voitures
         this.getChildren().add(car);
+
         for(Road R:map.getRoads()){//On parcourt les route
-            double roadangle=-2*Math.atan((R.getEnd().getY()-R.getStart().getY())/(R.getEnd().getX()-R.getStart().getX()+Math.sqrt(Math.pow(R.getEnd().getX()-R.getStart().getX(),2)+Math.pow(R.getEnd().getY()-R.getStart().getY(),2))));//calcule angle de la route
+            double roadangle=-2*Math.atan((R.getEnd().getY()-R.getStart().getY())/(R.getEnd().getX()-R.getStart().getX()+Math.sqrt(Math.pow(R.getEnd().getX()-R.getStart().getX(),2)+Math.pow(R.getEnd().getY()-R.getStart().getY(),2))));//calcule angle de la route avec le decalage en cas de depassement
 
-            for(ArrayList<Voiture>Voie : R.getVoiesAller()){//parcourt les voie
+            int counter = R.getVoiesAller().size()+1;
 
+            for(ArrayList<Voiture>Voie : R.getVoiesAller()){//parcourt les voie Aller
+                counter--;
                 for(Voiture Voit:Voie){
 
-                    Circle cercle = new Circle();//on dessine un cercle pour chaque voiture
-                    cercle.setCenterX(scaleX(Math.cos(roadangle)*Voit.getPositionActuelle()+R.getStart().x));
-                    cercle.setCenterY(scaleY(-Math.sin(roadangle)*Voit.getPositionActuelle()+R.getStart().y));
-                    cercle.setRadius(1);
-                    cercle.setFill(Color.BLUE);
+                    Circle cercle = new Circle();//on dessine un cercle pour chaque voiture dans le sens aller de la route
+                    cercle.setCenterX(scaleX(Math.cos(roadangle)*Voit.getPositionActuelle()+R.getStart().x)+Math.sin(roadangle)*counter*2);
+                    cercle.setCenterY(scaleY(-Math.sin(roadangle)*Voit.getPositionActuelle()+R.getStart().y)+Math.cos(roadangle)*counter*2);
+                    cercle.setRadius(2);
+                    cercle.setFill(Color.WHITE);
+                    cercle.setStrokeWidth(1);
+                    cercle.setStroke(Color.BLACK);
+                    car.getChildren().add(cercle);
+                }
+
+            }
+                counter=R.getVoiesRetour().size()+1;
+            for(ArrayList<Voiture>Voie : R.getVoiesRetour()){//parcourt les voie Retour
+                counter--;
+                for(Voiture Voit:Voie){
+
+                    Circle cercle = new Circle();//on dessine un cercle pour chaque voiture dans le sens retour
+                    cercle.setCenterX(scaleX(Math.cos(roadangle+Math.PI)*Voit.getPositionActuelle()+R.getEnd().x) +Math.sin(roadangle+Math.PI)*counter*2);
+                    cercle.setCenterY(scaleY(-Math.sin(roadangle+Math.PI)*Voit.getPositionActuelle()+R.getEnd().y)+Math.cos(roadangle+Math.PI)*counter*2);
+                    cercle.setRadius(2);
+                    cercle.setFill(Color.WHITE);
+                    cercle.setStroke(Color.BLACK);
+                    cercle.setStrokeWidth(1);
                     car.getChildren().add(cercle);
                 }
 

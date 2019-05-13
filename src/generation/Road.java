@@ -253,13 +253,13 @@ public class Road extends Infrastructure {
         return false; // Echec de rabattage
     }
 
-    public void acceleration(double temps){ // Fait avancer les voiture sur une voie en fonction des obstacles devant elles (autres vehicules et/ou infrastructures)
-        for(int i = 0; i < this.voiesAller.size(); i++){
-            for(int j = this.voiesAller.get(i).size() - 1; j >= 0; j--){
-                Voiture voituret = this.voiesAller.get(i).get(j);
+    public void acceleration(double temps,ArrayList< ArrayList<Voiture > > voie){ // Fait avancer les voiture sur une voie en fonction des obstacles devant elles (autres vehicules et/ou infrastructures)
+        for(int i = 0; i < voie.size(); i++){
+            for(int j = voie.get(i).size() - 1; j >= 0; j--){
+                Voiture voituret = voie.get(i).get(j);
 
                 // Voiture la plus avancee de la voie
-                if(j == this.voiesAller.get(i).size() - 1) {
+                if(j == voie.get(i).size() - 1) {
                     // Ralentissement de fin de route
                     if (voituret.getPositionActuelle() + voituret.getVitesseActuelle() * temps / 3600 + voituret.getAccelerationActuelle() * Math.pow(temps/3600,2) / 2 >= this.longueur) {
                         voituret.setAccelerationActuelle(0);
@@ -292,7 +292,7 @@ public class Road extends Infrastructure {
 
                     // Si ce n'est pas la voiture la plus avancee de la voie
                 } else {
-                    Voiture voituret2 = this.voiesAller.get(i).get(j+1); // Voiture de devant
+                    Voiture voituret2 = voie.get(i).get(j+1); // Voiture de devant
                     // On calcule notre prochaine position theorique
                     double prochainePositionTheorique;
                     double prochaineVitesseTheorique;
@@ -347,7 +347,8 @@ public class Road extends Infrastructure {
     public void avancerFrame(double temps){ // Nous changeons l'etat des voitures pour arriver a la prochaine frame (le temps est le pas temporel entre chaque frame, si celui-ci est de 2 secondes, nos voitures aurons une nouvelle position de 2 secondes plus tard)
         if(this.type == TypeRoute.DEPARTEMENTALE){
             // Une seule voie, on avance tout le monde
-            this.acceleration(temps);
+            this.acceleration(temps,this.voiesAller);
+            this.acceleration(temps,this.voiesRetour);
 
         }else if(this.type == TypeRoute.NATIONALE){
             // Voie Aller Moyenne Rabattage
@@ -391,7 +392,8 @@ public class Road extends Infrastructure {
 
 
             // Accelerations dans toutes les voies
-            this.acceleration(temps);
+            this.acceleration(temps,this.voiesAller);
+            this.acceleration(temps,this.voiesRetour);
 
         }else if(this.type == TypeRoute.AUTOROUTE){
             // Voie Aller Moyenne Rabattage // D'abord la moyenne pour eviter un rabattage de 2 voies ... d'un coup
@@ -474,7 +476,8 @@ public class Road extends Infrastructure {
 
 
             // Accelerations dans toutes les voies
-            this.acceleration(temps);
+            this.acceleration(temps,this.voiesAller);
+            this.acceleration(temps,this.voiesRetour);
         }
     }
 
