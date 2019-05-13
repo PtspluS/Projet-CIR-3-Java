@@ -29,16 +29,16 @@ public class main extends Application{
 
 
     public void start(Stage primaryStage) {//Fonction qui gere l'application
-        City lille = new City(0,0,"Lille");//creation des villes
-        City tourcoing = new City(50,100,"Tourcoing");
-        City paris = new City(40,190,"Paris");
-        City marseille = new City(100,5,"Marseille");
-        City amien = new City(151,40,"Tourcoing");
-        NetWork map = new NetWork(true ,lille,tourcoing,paris,marseille,amien);
+        City lille = new City(83,0,"Lille");//creation des villes
+        City tourcoing = new City(354,99,"Tourcoing");
+        City paris = new City(101,100,"Paris");
+        City marseille = new City(500,500,"Marseille");
+        City amien = new City(151,300,"Tourcoing");
+        NetWork map = new NetWork(true ,amien,paris,lille,tourcoing,marseille);
         int windowweight=1000;
         int windoheight=800;
-        double mapweight=200;
-        double mapheight=200;
+        double mapweight=500;
+        double mapheight=500;
 
 
 

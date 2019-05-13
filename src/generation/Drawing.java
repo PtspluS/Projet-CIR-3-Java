@@ -63,6 +63,28 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
             line.setStartY(scaleY(r.getStart().getY()));
             line.setEndX(scaleX(r.getEnd().getX()));
             line.setEndY(scaleY(r.getEnd().getY()));
+            line.setSmooth(true);
+            switch (r.getType()){
+                case DEPARTEMENTALE:
+                    line.setStroke(Color.BROWN);
+                    line.setStrokeWidth(1);
+                    break;
+
+                case NATIONALE:
+                    line.setStroke(Color.YELLOW);
+                    line.setStrokeWidth(3);
+                    break;
+
+                case AUTOROUTE:
+                    line.setStroke(Color.RED);
+                    line.setStrokeWidth(5);
+                    break;
+
+
+            }
+
+
+
             road.getChildren().add(line);
 
         }
@@ -72,7 +94,7 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
         this.car= new Group();//groupe des voitures
         this.getChildren().add(car);
         for(Road R:map.getRoads()){//On parcourt les route
-            double roadangle=Math.atan(-R.getMatrixRepresentation()[1]/R.getMatrixRepresentation()[0]);//calcule angle de la route
+            double roadangle=-2*Math.atan((R.getEnd().getY()-R.getStart().getY())/(R.getEnd().getX()-R.getStart().getX()+Math.sqrt(Math.pow(R.getEnd().getX()-R.getStart().getX(),2)+Math.pow(R.getEnd().getY()-R.getStart().getY(),2))));//calcule angle de la route
 
             for(ArrayList<Voiture>Voie : R.getVoiesAller()){//parcourt les voie
 
@@ -81,7 +103,7 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
                     Circle cercle = new Circle();//on dessine un cercle pour chaque voiture
                     cercle.setCenterX(scaleX(Math.cos(roadangle)*Voit.getPositionActuelle()+R.getStart().x));
                     cercle.setCenterY(scaleY(-Math.sin(roadangle)*Voit.getPositionActuelle()+R.getStart().y));
-                    cercle.setRadius(4);
+                    cercle.setRadius(1);
                     cercle.setFill(Color.BLUE);
                     car.getChildren().add(cercle);
                 }

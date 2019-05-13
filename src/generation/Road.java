@@ -12,9 +12,9 @@ public class Road extends Infrastructure {
         this.start = start;
         this.end = end;
         this.matrixRepresentation = new double[]{end.x - start.x, end.y - start.y};
-        double a = end.y-start.y;
-        double b = start.x - end.x;
-        double c = a*start.x + b*start.y;
+        double a = end.x-start.x;
+        double b = end.y - start.y;
+        double c = -a*start.x - b*start.y;
         this.equationCarthesienneReduite = new double []{a,b,c};
 
         this.longueur = Math.sqrt(Math.pow((a),2)+Math.pow(b,2));
@@ -126,6 +126,9 @@ public class Road extends Infrastructure {
     private final double limitationVitesse; // Limitation de vitesse selon le type de route
     private final double distanceSecurite; // Distance a conserver entre les vehicules
     private final double longueur; // Longueur de la route (en km)
+
+
+
     private final TypeRoute type; // Type de route
 
     // Tableaux des voies contenant les voitures
@@ -138,6 +141,11 @@ public class Road extends Infrastructure {
     // private Infrastructure infraArrive;
 
     // Getters
+
+    public TypeRoute getType() {
+        return this.type;
+    }
+
     public ArrayList< ArrayList< Voiture > > getVoiesAller() { return voiesAller; }
     public ArrayList< ArrayList< Voiture > > getVoiesRetour() { return voiesRetour; }
 
