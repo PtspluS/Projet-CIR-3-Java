@@ -25,7 +25,7 @@ public class main extends Application {
         Application.launch(main.class, args);
         //map.print();
 
-        //Export.exportNetwok(map, "test.txt");
+        //Export.exportNetwork(map, "test.txt");
     }
 
     public void start(Stage primaryStage) {//Fonction qui gere l'application

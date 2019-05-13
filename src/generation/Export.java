@@ -3,7 +3,7 @@ package generation;
 import java.io.*;
 
 public class Export {
-    static void exportNetwok (NetWork map, String fileName){
+    static void exportNetwork (NetWork map, String fileName){
         ObjectOutputStream oout= null;
         try {
             FileOutputStream file = new FileOutputStream(fileName);//on ouvre le fichier
