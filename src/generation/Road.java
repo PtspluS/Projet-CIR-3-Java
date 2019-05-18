@@ -118,7 +118,7 @@ public class Road extends Infrastructure implements java.io.Serializable{
     // Les valeurs de vitesses seront estimees en km/h
 
     // Enumeration des types de routes
-    public static enum TypeRoute {
+    public enum TypeRoute {
         DEPARTEMENTALE, NATIONALE, AUTOROUTE
     }
 

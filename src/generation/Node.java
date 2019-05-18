@@ -3,7 +3,7 @@ package generation;
 import java.util.ArrayList;
 
 public abstract class Node extends Infrastructure implements java.io.Serializable{
-    private ArrayList<Road> roads = new ArrayList<>();
+    protected ArrayList<Road> roads = new ArrayList<>();
 
     public ArrayList<Road> getRoads() {
         return roads;

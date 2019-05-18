@@ -37,7 +37,19 @@ public class main extends Application {
         City B = new City(0, 450, "B");
         City E = new City(400, 0, "B");
         City R = new City(250, 120, "B");
-        NetWork map = new NetWork(true, paris, lille, tourcoing, marseille, B, R, E, amien);
+
+        //mise a jour du code
+        ArrayList<City> cities = new ArrayList<>();
+        cities.add( paris);
+        cities.add(lille);
+        cities.add(tourcoing);
+        cities.add(marseille);
+        cities.add(B);
+        cities.add(R);
+        cities.add(E);
+        cities.add(amien);
+
+        NetWork map = new NetWork(true, cities);//si on passe un tableau alors on utilise la nouvel methode
         int windowweight = 1900;
         int windoheight = 900;
         double mapweight = 500;

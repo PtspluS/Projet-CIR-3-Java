@@ -40,6 +40,8 @@ public class NetWork implements java.io.Serializable{
         this.cities.addAll(city);
     }
 
+    @Deprecated
+    //auto complete generation of map each city is link with all the others cities by random type of road
     public NetWork (boolean autoCompletRoads, City ... city){//genere une carte ou chaque ville est reliee a chaque autre ville
         double xMax = 0, yMax = 0;
         for (City c: city  ) {
@@ -88,6 +90,101 @@ public class NetWork implements java.io.Serializable{
                     if (a != b) {
                         this.addNewIntersection(a, b);
                     }
+                }
+            }
+        }
+    }
+
+    public NetWork (boolean autCompleteRoads, ArrayList<City> cities) {
+        double xMax = 0;
+        double yMax = 0;
+        double ratioDistance = 1000;//distance qui fait que l'on joint deux intersections
+        int nbRoad = 0;
+        this.cities = cities;
+        for (City c : this.cities) {//permet de trouver la taille max de la carte en x et y
+            if (c.getX() > xMax) {
+                xMax = c.getX();
+            }
+            if (c.getY() > yMax) {
+                yMax = c.getY();
+            }
+        }
+        this.sizeX = xMax;
+        this.sizeY = yMax;
+        if (autCompleteRoads) {//on lit toutes les villes entre elles
+            for (City a : this.cities) {
+                for (City b : this.cities) {
+                    if (a != b) {
+                        if (!areLink(a, b)) {
+                            int tmp = (int) (Math.random() * 3);
+                            Road r;
+                            switch (tmp) {
+                                case 0:
+                                    r = new Road(a, b, Road.TypeRoute.DEPARTEMENTALE);
+                                    break;
+
+                                case 1:
+                                    r = new Road(a, b, Road.TypeRoute.NATIONALE);
+                                    break;
+
+                                default:
+                                    r = new Road(a, b, Road.TypeRoute.AUTOROUTE);
+                                    break;
+
+                            }
+
+                            r.setName("N" + nbRoad);
+                            this.roads.add(r);
+                            nbRoad++;
+                        }
+                    }
+                }
+            }
+        }
+        for (Road a : this.roads){//cree toutes les intersections sans optimisation
+            for ( Road b : this.roads) {
+                if (a != b) {
+                    this.addNewIntersection(a, b);
+                }
+            }
+        }
+        //verifie si une route peut pointer vers une nouvelle inteersections plus proche pour limiter les intersections
+        for (Road r: this.roads) {
+            for (Intersection i : this.cross){
+                if(distancePointLine(r,i)<ratioDistance){
+                    updateIntersection(r);
+                    r.setEnd(i);
+                    Road tps = new Road(i,r.getEnd(),r.getType());
+                    tps.setName("N"+nbRoad);
+                    this.roads.add(tps);
+                    nbRoad++;
+                }
+            }
+        }
+    }
+
+    private double distancePointLine (Road r, Intersection i){//donne la distance entre un point et une droite
+        double a=0,b=0,c=0,x=0,y=0;
+        //coeff de r
+        a = r.getEquationCarthesienneReduite()[0];
+        b = r.getEquationCarthesienneReduite()[1];
+        c = r.getEquationCarthesienneReduite()[2];
+
+        //coordonnee de i
+        x = i.getX();
+        y = i.getY();
+        double equation = Math.abs(a*x+b*y+c)/Math.sqrt(Math.pow(a,2)+Math.pow(b,2));
+
+        return equation;
+    }
+
+    private void updateIntersection(Road r){//check et supprime les routes qui sont dans des intersections, supprime l'intersection si elle ne contient qu'une route
+        for(Intersection i : this.cross){
+            if(i.roads.contains(r)){
+                if(i.roads.size()==2){
+                    this.cross.remove(i);
+                } else {
+                    i.roads.remove(r);
                 }
             }
         }
