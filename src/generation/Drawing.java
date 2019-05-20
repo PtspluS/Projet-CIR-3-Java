@@ -45,6 +45,7 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
         for(City c:map.getCities()){
 
             Circle cercle = new Circle();//les villes sont des cercles
+
             cercle.setCenterX(scaleX(c.getX()));
             cercle.setCenterY(scaleY(c.getY()));
             cercle.setRadius(10);

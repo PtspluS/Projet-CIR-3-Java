@@ -157,6 +157,9 @@ ArrayList<City> citytab=new ArrayList();
             }else{scaler=mapheight;}
 
 
+
+
+
             VBox vbox = new VBox();
             vbox.setSpacing(8);
             final ToggleGroup groupaction = new ToggleGroup();
@@ -196,18 +199,45 @@ ArrayList<City> citytab=new ArrayList();
             Drawing draw=new Drawing(windowwidth-800,windowheight,mapwidth,mapheight);
           draw.drawwindow();
         Group drawplace=new Group();
-           drawplace.getChildren().add(draw);
+            drawplace.getChildren().add(draw);
             root.setCenter(drawplace);
+
+
+            Circle cercle = new Circle();//les villes sont des cercles
+            cercle.setCenterX(500);
+            cercle.setCenterY(500);
+            cercle.setRadius(10);
+            cercle.setFill(Color.YELLOW);
+            cercle.setStroke(Color.ORANGE);
+            cercle.setStrokeWidth(5);
+
+
+
+            AnimationTimer refresh=new AnimationTimer()//gestion de l'animation
+            { public void handle(long currentNanoTime)
+            {draw.drawcity(net);
+            this.stop();
+
+            }
+            };
 
             root.getCenter().setOnMouseClicked(new EventHandler<MouseEvent>(){
                 public void handle(MouseEvent me){
                     if(groupaction.getSelectedToggle()==choosecity){
                         if((int)me.getX()>815 && (int)me.getX()<mapwidth/(scaler)*(windowwidth-30) && (int)me.getY()>15 && (int)me.getY()<mapwidth/(scaler)*(windowheight-30)) {
-                            City ville1 = new City((int) me.getX()/(scaler)*(windowheight-30) , (int) me.getY()/(scaler)*(windowheight-30),cityname.getText());
+                            City ville1 = new City((int) ((me.getX()-15) * (scaler) / (windowwidth - 830)), (int)( (me.getY()-15) * (scaler) / (windowheight-30)), cityname.getText());
+                            System.out.println((int) me.getX());
+                            System.out.println((int)( me.getX() * (scaler) / (windowwidth - 800)));
                             net.addCity(ville1);
-                            drawplace.getChildren().add(draw.drawonecity((int) me.getX(), (int) me.getY()));
-                        }
-                        }
+                            refresh.start();
+
+
+
+
+
+
+
+                        }}
                     if(groupaction.getSelectedToggle()==choosedcity){
                         System.out.println("delete");
                      City ville=Foundnearcity((int)(me.getX()/(scaler)*(windowwidth-30)),(int)(me.getY()/(scaler)*(windowheight-30)),net);
