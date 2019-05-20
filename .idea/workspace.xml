@@ -3,9 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="446569ce-5b4d-49dc-8a65-3109bcfe8d68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/projetCIR3/generation/Road.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/projetCIR3/generation/Road.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/projetCIR3/generation/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/projetCIR3/generation/main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/generation/Drawing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/generation/Drawing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/generation/Road.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/generation/Road.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/generation/NetWork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/generation/NetWork.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/generation/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/generation/main.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -17,27 +18,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/generation/main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
+            <state relative-caret-position="34">
+              <caret line="208" column="25" lean-forward="true" selection-start-line="208" selection-start-column="25" selection-end-line="208" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#549#550#0" expanded="true" />
-                <element signature="e#607#608#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/generation/Drawing.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="156" lean-forward="true" selection-start-line="156" selection-end-line="156" />
+            <state relative-caret-position="372">
+              <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1032#1033#0" expanded="true" />
+                <element signature="e#1133#1134#0" expanded="true" />
+                <element signature="e#1172#1173#0" expanded="true" />
+                <element signature="e#1275#1276#0" expanded="true" />
+                <element signature="e#6578#6579#0" expanded="true" />
+                <element signature="e#6624#6625#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -46,8 +51,46 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/generation/Road.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
+            <state relative-caret-position="389">
               <caret line="479" column="54" selection-start-line="479" selection-start-column="54" selection-end-line="479" selection-end-column="54" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/generation/NetWork.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="202">
+              <caret line="227" column="46" lean-forward="true" selection-start-line="227" selection-start-column="46" selection-end-line="227" selection-end-column="46" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#856#857#0" expanded="true" />
+                <element signature="e#896#897#0" expanded="true" />
+                <element signature="e#2991#2992#0" expanded="true" />
+                <element signature="e#3020#3021#0" expanded="true" />
+                <element signature="e#3073#3074#0" expanded="true" />
+                <element signature="e#3109#3110#0" expanded="true" />
+                <element signature="e#3158#3159#0" expanded="true" />
+                <element signature="e#3186#3187#0" expanded="true" />
+                <element signature="e#3245#3246#0" expanded="true" />
+                <element signature="e#3279#3280#0" expanded="true" />
+                <element signature="e#3320#3321#0" expanded="true" />
+                <element signature="e#3348#3349#0" expanded="true" />
+                <element signature="e#3399#3400#0" expanded="true" />
+                <element signature="e#3433#3434#0" expanded="true" />
+                <element signature="e#3465#3466#0" expanded="true" />
+                <element signature="e#3493#3494#0" expanded="true" />
+                <element signature="e#3535#3536#0" expanded="true" />
+                <element signature="e#3569#3570#0" expanded="true" />
+                <element signature="e#3601#3602#0" expanded="true" />
+                <element signature="e#3629#3630#0" expanded="true" />
+                <element signature="e#3671#3672#0" expanded="true" />
+                <element signature="e#3705#3706#0" expanded="true" />
+                <element signature="e#7243#7244#0" expanded="true" />
+                <element signature="e#7262#7263#0" expanded="true" />
+                <element signature="e#7315#7316#0" expanded="true" />
+                <element signature="e#7349#7350#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -70,12 +113,25 @@
       <find>start</find>
       <find>E</find>
       <find>this.voiesAller</find>
+      <find>rb7</find>
+      <find>weight</find>
+      <find>windoheight</find>
     </findStrings>
     <replaceStrings>
       <replace>Intersection</replace>
       <replace>matrixRepresentation</replace>
       <replace>NetWork</replace>
       <replace>end</replace>
+      <replace>inputposx</replace>
+      <replace>choosecity</replace>
+      <replace>chooseroad</replace>
+      <replace>choosedcity</replace>
+      <replace>choosedroad</replace>
+      <replace>choosedep</replace>
+      <replace>choosenat</replace>
+      <replace>choosenaut</replace>
+      <replace>width</replace>
+      <replace>windowheight</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -98,17 +154,17 @@
         <option value="$PROJECT_DIR$/src/generation/Map.java" />
         <option value="$PROJECT_DIR$/src/generation/Node.java" />
         <option value="$PROJECT_DIR$/src/generation/Infrastructure.java" />
-        <option value="$PROJECT_DIR$/src/generation/NetWork.java" />
         <option value="$PROJECT_DIR$/src/generation/Road.java" />
-        <option value="$PROJECT_DIR$/src/generation/main.java" />
         <option value="$PROJECT_DIR$/src/generation/Drawing.java" />
+        <option value="$PROJECT_DIR$/src/generation/NetWork.java" />
+        <option value="$PROJECT_DIR$/src/generation/main.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="950" />
-    <option name="width" value="980" />
-    <option name="height" value="1040" />
+    <option name="x" value="-9" />
+    <option name="width" value="978" />
+    <option name="height" value="1039" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -117,6 +173,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -139,7 +196,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -291,8 +347,8 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4957806" visible="true" weight="0.31208053" />
-      <window_info id="Structure" order="1" sideWeight="0.5042194" side_tool="true" visible="true" weight="0.31208053" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48349056" visible="true" weight="0.16174497" />
+      <window_info id="Structure" order="1" sideWeight="0.5165094" side_tool="true" visible="true" weight="0.16174497" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
@@ -301,12 +357,12 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49932885" weight="0.3286119" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39943343" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39943343" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="8" sideWeight="0.49932885" visible="true" weight="0.3286119" />
+      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49932885" weight="0.3286119" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50067115" side_tool="true" weight="0.3286119" />
@@ -443,15 +499,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/generation/Road.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
+        <state relative-caret-position="389">
           <caret line="479" column="54" selection-start-line="479" selection-start-column="54" selection-end-line="479" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/generation/Drawing.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1032#1033#0" expanded="true" />
+            <element signature="e#1133#1134#0" expanded="true" />
+            <element signature="e#1172#1173#0" expanded="true" />
+            <element signature="e#1275#1276#0" expanded="true" />
+            <element signature="e#6578#6579#0" expanded="true" />
+            <element signature="e#6624#6625#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/generation/NetWork.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="81" column="25" selection-start-line="81" selection-start-column="25" selection-end-line="81" selection-end-column="25" />
+        <state relative-caret-position="202">
+          <caret line="227" column="46" lean-forward="true" selection-start-line="227" selection-start-column="46" selection-end-line="227" selection-end-column="46" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#856#857#0" expanded="true" />
@@ -476,26 +548,50 @@
             <element signature="e#3629#3630#0" expanded="true" />
             <element signature="e#3671#3672#0" expanded="true" />
             <element signature="e#3705#3706#0" expanded="true" />
+            <element signature="e#7243#7244#0" expanded="true" />
+            <element signature="e#7262#7263#0" expanded="true" />
+            <element signature="e#7315#7316#0" expanded="true" />
+            <element signature="e#7349#7350#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/javafx-src.zip!/javafx/scene/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="8411" selection-start-line="8411" selection-end-line="8411" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/javafx-src.zip!/javafx/scene/control/Button.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="186" selection-start-line="186" selection-end-line="186" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/javafx-src.zip!/javafx/scene/Scene.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="124">
+          <caret line="2494" selection-start-line="2494" selection-end-line="2494" />
+          <folding>
+            <element signature="e#66572#66573#0" expanded="true" />
+            <element signature="e#66618#66619#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/javafx-src.zip!/javafx/event/Event.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="198" selection-start-line="198" selection-end-line="198" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/generation/main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#549#550#0" expanded="true" />
-            <element signature="e#607#608#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/generation/Drawing.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="156" lean-forward="true" selection-start-line="156" selection-end-line="156" />
+        <state relative-caret-position="34">
+          <caret line="208" column="25" lean-forward="true" selection-start-line="208" selection-start-column="25" selection-end-line="208" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

@@ -220,6 +220,14 @@ public class NetWork {
         }
     }
 
+    public void addCity(City a){
+        this.cities.add(a);
+    }
+
+    public void removeCity(City a){
+        this.cities.remove(cities.indexOf(a));
+    }
+
     public void addRoad(City a, City b,Road.TypeRoute t){
         try{
             this.addNewRoad(a,b,t);
