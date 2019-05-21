@@ -3,6 +3,7 @@
 package generation;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -84,7 +85,7 @@ ArrayList<City> citytab=new ArrayList();
             public void handle(ActionEvent event) {
                 System.out.println("yeee");
                 root.getChildren().clear();
-                creat(root, windowwidth,windowheight);
+                new Editor().creat(root, windowwidth,windowheight);
 
             }
         });
@@ -95,181 +96,7 @@ ArrayList<City> citytab=new ArrayList();
     }
 
 
-    public void creat(BorderPane root,int windowwidth,int windowheight){
-        VBox vbox = new VBox();
-        vbox.setSpacing(8);
 
-
-
-        //inputposx.setMaxWidth(120);
-        HBox hb = new HBox();
-        Label label1 = new Label("size x:");
-        TextField inputposx = new TextField ();
-        hb.getChildren().addAll(label1, inputposx);
-        hb.setSpacing(10);
-        hb.setAlignment(Pos.CENTER);
-
-
-
-        HBox hb2 = new HBox();
-        Label label2 = new Label("size y:");
-        TextField inputposy = new TextField ();
-        hb2.getChildren().addAll(label2, inputposy);
-        hb2.setSpacing(10);
-        hb2.setAlignment(Pos.CENTER);
-
-        Button Go = new Button("Go ");
-        Go.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                int posx=0;
-                int posy=0;
-                boolean passed=false;
-                try {
-                     posx = Integer.parseInt(inputposx.getText());
-                     posy = Integer.parseInt(inputposy.getText());
-                    passed=true;
-                }catch (Exception e){
-                    inputposx.setText("wrong value");
-                    inputposy.setText("wrong value");}
-                if(passed) {
-
-                    root.getChildren().clear();
-                    editor(root,windowwidth,windowheight,posx,posy);
-                }
-
-            }
-        });
-
-        vbox.getChildren().addAll(hb,hb2,Go);
-        root.setCenter(vbox);
-        vbox.setAlignment(Pos.CENTER);
-
-    }
-
-
-
-        public void editor(BorderPane root,int windowwidth,int windowheight,int mapwidth,int mapheight ){
-        NetWork net=new NetWork();
-            double scaler;if(mapwidth/windowwidth>=mapheight/windowheight){
-                scaler=mapwidth;
-            }else{scaler=mapheight;}
-
-
-
-
-
-            VBox vbox = new VBox();
-            vbox.setSpacing(8);
-            final ToggleGroup groupaction = new ToggleGroup();
-            final ToggleGroup grouptype = new ToggleGroup();
-
-
-            RadioButton choosecity = new RadioButton("City");
-            choosecity.setToggleGroup(groupaction);
-            RadioButton chooseroad = new RadioButton("Road");
-            chooseroad.setToggleGroup(groupaction);
-            RadioButton choosedcity = new RadioButton("delete City");
-            choosedcity.setToggleGroup(groupaction);
-            RadioButton choosedroad = new RadioButton("delete road");
-            choosedroad.setToggleGroup(groupaction);
-
-
-            RadioButton choosedep = new RadioButton("Departemental");
-            choosedep.setToggleGroup(grouptype);
-            RadioButton choosenat = new RadioButton("National");
-            choosenat.setToggleGroup(grouptype);
-            RadioButton choosenaut= new RadioButton("Autoroute");
-            choosenaut.setToggleGroup(grouptype);
-
-
-
-            HBox hb = new HBox();
-            Label label1 = new Label("city name:");
-            TextField cityname = new TextField ();
-            hb.getChildren().addAll(label1, cityname);
-            hb.setSpacing(10);
-
-
-            vbox.getChildren().addAll(choosecity,chooseroad,choosedcity,choosedroad,choosedep,choosenat,choosenaut,hb);
-            root.setLeft(vbox);
-            vbox.setAlignment(Pos.BASELINE_LEFT);
-
-            Drawing draw=new Drawing(windowwidth-800,windowheight,mapwidth,mapheight);
-          draw.drawwindow();
-        Group drawplace=new Group();
-            drawplace.getChildren().add(draw);
-            root.setCenter(drawplace);
-
-
-            Circle cercle = new Circle();//les villes sont des cercles
-            cercle.setCenterX(500);
-            cercle.setCenterY(500);
-            cercle.setRadius(10);
-            cercle.setFill(Color.YELLOW);
-            cercle.setStroke(Color.ORANGE);
-            cercle.setStrokeWidth(5);
-
-
-
-            AnimationTimer refresh=new AnimationTimer()//gestion de l'animation
-            { public void handle(long currentNanoTime)
-            {draw.drawcity(net);
-            this.stop();
-
-            }
-            };
-
-            root.getCenter().setOnMouseClicked(new EventHandler<MouseEvent>(){
-                public void handle(MouseEvent me){
-                    if(groupaction.getSelectedToggle()==choosecity){
-                        if((int)me.getX()>815 && (int)me.getX()<mapwidth/(scaler)*(windowwidth-30) && (int)me.getY()>15 && (int)me.getY()<mapwidth/(scaler)*(windowheight-30)) {
-                            City ville1 = new City((int) ((me.getX()-15) * (scaler) / (windowwidth - 830)), (int)( (me.getY()-15) * (scaler) / (windowheight-30)), cityname.getText());
-                            System.out.println((int) me.getX());
-                            System.out.println((int)( me.getX() * (scaler) / (windowwidth - 800)));
-                            net.addCity(ville1);
-                            refresh.start();
-
-
-
-
-
-
-
-                        }}
-                    if(groupaction.getSelectedToggle()==choosedcity){
-                        System.out.println("delete");
-                     City ville=Foundnearcity((int)(me.getX()/(scaler)*(windowwidth-30)),(int)(me.getY()/(scaler)*(windowheight-30)),net);
-                        if(ville.getX()!=-1){
-                            net.removeCity(ville);
-                            System.out.println("delete1");
-                        }
-                    }
-
-
-
-
-
-                }
-            });
-
-
-        }
-
-        public City Foundnearcity(int posx,int posy,NetWork net){
-
-        for(City i : net.getCities()){
-
-            if(Math.abs(i.getX()-posx)<=15 || Math.abs(i.getY()-posy)<=15){
-
-                return i;
-            }
-        }
-        return new City(-1,-1);
-
-
-        }
 
 
 
@@ -280,7 +107,7 @@ ArrayList<City> citytab=new ArrayList();
      public void vroum(BorderPane root,int windowwidth,int windowheight,ArrayList<City> citytab){
         //Fonction qui gere l'application
 
-        NetWork map = new NetWork(citytab);
+        NetWork map = new NetWork(true,new City(0,0,"Lille"),new City(1,90,"Tourcoing"),new City(500,100,"Paris"),new City(500,1000,"Marseille"), new City(321,100,"Tourcoing"));
          double mapwidth=500;
          double mapheight=1000;
 
@@ -300,7 +127,7 @@ ArrayList<City> citytab=new ArrayList();
             public int delay = 0;
         public void handle(long currentNanoTime)
         {
-            if(delay==100) {
+            if(delay==10) {
                 delay=0;
                 Voiture car = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
                 map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterAller(car, 0, 0);//lancement des voitures

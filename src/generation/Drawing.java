@@ -182,6 +182,10 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
         this.getChildren().remove(car);
     }
 
+    public void removeall(){
+        this.getChildren().clear();
+    }
+
     public void drawwindow(){
         Rectangle r = new Rectangle();
         r.setX(800);

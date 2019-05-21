@@ -227,6 +227,9 @@ public class NetWork {
     public void removeCity(City a){
         this.cities.remove(cities.indexOf(a));
     }
+    public void removeRoad(Road r) {
+        this.roads.remove(roads.indexOf(r));
+    }
 
     public void addRoad(City a, City b,Road.TypeRoute t){
         try{
