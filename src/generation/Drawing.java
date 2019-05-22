@@ -60,23 +60,7 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
     }
 
 
-    public Circle drawonecity(int posx,int posy){// Fonction qui dessine les ville
 
-
-
-            Circle cercle = new Circle();//les villes sont des cercles
-            cercle.setCenterX(posx);
-            cercle.setCenterY(posy);
-            cercle.setRadius(10);
-            cercle.setFill(Color.YELLOW);
-            cercle.setStroke(Color.ORANGE);
-            cercle.setStrokeWidth(5);
-            return cercle;
-
-
-
-
-    }
 
 
 

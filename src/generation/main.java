@@ -38,13 +38,13 @@ public class main extends Application{
 ArrayList<City> citytab=new ArrayList();
         citytab.add( new City(0,0,"Lille"));//creation des villes
         citytab.add( new City(1,90,"Tourcoing"));
-        citytab.add(new City(500,100,"Paris"));
-        citytab.add(new City(500,1000,"Marseille"));
+        citytab.add(new City(499,312,"Paris"));
+        citytab.add(new City(499,25,"Marseille"));
         citytab.add( new City(321,100,"Tourcoing"));
         citytab.add( new City(0,50,"B"));
         citytab.add( new City(400,0,"B"));
         citytab.add( new City(250,300,"B"));
-
+        NetWork map = new NetWork(true,new City(0,0,"Lille"),new City(100,90,"Tourcoing"),new City(500,100,"Paris"),new City(400,300,"Marseille"), new City(321,500,"Tourcoing"));
 
 
 
@@ -52,6 +52,8 @@ ArrayList<City> citytab=new ArrayList();
         primaryStage.setTitle("Road of Tottiland");
         int windowwidth=1900;
         int windowheight=900;
+        int mapwidth=500;
+        int mapheight=500;
 
         //Group root = new Group();//creation du groupe racine
         BorderPane root = new BorderPane();
@@ -75,7 +77,7 @@ ArrayList<City> citytab=new ArrayList();
             public void handle(ActionEvent event) {
                 System.out.println("yeee");
                 root.getChildren().clear();
-                vroum(root, windowwidth,windowheight,citytab);
+                new Editor().vroum(root, windowwidth,windowheight,map,mapwidth,mapheight);
             }
         });
 
@@ -104,24 +106,15 @@ ArrayList<City> citytab=new ArrayList();
 
 
 
-     public void vroum(BorderPane root,int windowwidth,int windowheight,ArrayList<City> citytab){
+    /* public void vroum(BorderPane root,int windowwidth,int windowheight,NetWork map){
         //Fonction qui gere l'application
-
-        NetWork map = new NetWork(true,new City(0,0,"Lille"),new City(1,90,"Tourcoing"),new City(500,100,"Paris"),new City(500,1000,"Marseille"), new City(321,100,"Tourcoing"));
          double mapwidth=500;
          double mapheight=1000;
-
-
-
         //creaton de la fenetre
-
-
         Drawing draw=new Drawing(windowwidth,windowheight,mapwidth ,mapheight);//creation d'un objet dessin
          root.getChildren().add(draw);
         draw.drawroad(map);//dessin des routes
         draw.drawcity(map);//dessin des villes
-
-
         new AnimationTimer()//gestion de l'animation
         {
             public int delay = 0;
@@ -145,16 +138,7 @@ ArrayList<City> citytab=new ArrayList();
         }
     }.start();
 
-
-
-
-
-
-
-
-
-
-}
+}*/
 
 
 

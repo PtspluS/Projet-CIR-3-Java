@@ -1,5 +1,6 @@
 package generation;
 
+import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -72,15 +73,9 @@ public class Editor {
 
     public void editor(BorderPane root,int windowwidth,int windowheight,int mapwidth,int mapheight ){
         NetWork net=new NetWork();
-
-
         double scaler;if(mapwidth/windowwidth>=mapheight/windowheight){
             scaler=mapwidth;
         }else{scaler=mapheight;}
-
-
-
-
 
         VBox vbox = new VBox();
         vbox.setSpacing(8);
@@ -113,8 +108,23 @@ public class Editor {
         hb.getChildren().addAll(label1, cityname);
         hb.setSpacing(10);
 
+        Button go1 = new Button("Go ");
+        go1.setOnAction(new EventHandler<ActionEvent>() {
 
-        vbox.getChildren().addAll(choosecity,chooseroad,choosedcity,choosedroad,choosedep,choosenat,chooseaut,hb);
+            @Override
+            public void handle(ActionEvent event) {
+                for(City c : net.getCities()){
+                    double tmp=c.getX()/(scaler)*(windowwidth-830)+15;
+                    tmp+=-800;
+                    tmp=(tmp-15) * (scaler) / (windowwidth - 830);
+                    c.setX(tmp);
+                }
+                root.getChildren().clear();
+                vroum(root,windowwidth,windowheight,net,mapwidth,mapheight);
+            }})
+            ;
+
+        vbox.getChildren().addAll(choosecity,chooseroad,choosedcity,choosedroad,choosedep,choosenat,chooseaut,hb,go1);
         root.setLeft(vbox);
         vbox.setAlignment(Pos.BASELINE_LEFT);
 
@@ -272,6 +282,51 @@ public class Editor {
             }
         }
         return new City(-1,-1);
+
+
+    }
+
+
+
+
+    public void vroum(BorderPane root,int windowwidth,int windowheight,NetWork map,double mapwidth,double mapheight){
+        //Fonction qui gere l'application
+
+        //creaton de la fenetre
+        Drawing draw=new Drawing(windowwidth,windowheight,mapwidth ,mapheight);//creation d'un objet dessin
+        root.getChildren().add(draw);
+        draw.drawroad(map);//dessin des routes
+        draw.drawcity(map);//dessin des villes
+        new AnimationTimer()//gestion de l'animation
+        {
+            public int delay = 0;
+            public void handle(long currentNanoTime)
+            {
+                if(delay==10) {
+                    delay=0;
+                    Voiture car = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
+                    map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterAller(car, 0, 0);//lancement des voitures
+                    Voiture car2 = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
+                    map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterRetour(car2, 0, 0);//lancement des voitures
+                }else{
+                    delay++;
+                }
+                for(int j=0;j<map.getRoads().size();j++) {//boucle de rafraichissement
+                    map.getRoads().get(j).avancerFrame(50);
+                    draw.removecar();
+                    draw.drawcar(map);
+                }
+
+            }
+        }.start();
+
+
+
+
+
+
+
+
 
 
     }

@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="446569ce-5b4d-49dc-8a65-3109bcfe8d68" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/generation/Editor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/projetCIR3/generation/NetWork.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/projetCIR3/generation/NetWork.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/projetCIR3/generation/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/projetCIR3/generation/main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/generation/Drawing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/generation/Drawing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/generation/NetWork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/generation/NetWork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/generation/Editor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/generation/Editor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/generation/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/generation/main.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -19,23 +17,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/generation/main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="85" column="43" selection-start-line="85" selection-start-column="43" selection-end-line="85" selection-end-column="43" />
+            <state relative-caret-position="289">
+              <caret line="53" column="29" lean-forward="true" selection-start-line="53" selection-start-column="29" selection-end-line="53" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#742#743#0" expanded="true" />
+                <element signature="e#800#801#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/generation/Editor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-102">
-              <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+            <state relative-caret-position="-165">
+              <caret line="123" column="15" lean-forward="true" selection-start-line="123" selection-start-column="15" selection-end-line="123" selection-end-column="15" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -46,8 +46,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/generation/Drawing.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-866">
-              <caret line="79" selection-start-line="79" selection-end-line="79" />
+            <state relative-caret-position="170">
+              <caret line="34" column="57" lean-forward="true" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="57" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1054#1055#0" expanded="true" />
@@ -167,17 +167,17 @@
         <option value="$PROJECT_DIR$/src/generation/Node.java" />
         <option value="$PROJECT_DIR$/src/generation/Infrastructure.java" />
         <option value="$PROJECT_DIR$/src/generation/Road.java" />
-        <option value="$PROJECT_DIR$/src/generation/Drawing.java" />
         <option value="$PROJECT_DIR$/src/generation/NetWork.java" />
-        <option value="$PROJECT_DIR$/src/generation/Editor.java" />
+        <option value="$PROJECT_DIR$/src/generation/Drawing.java" />
         <option value="$PROJECT_DIR$/src/generation/main.java" />
+        <option value="$PROJECT_DIR$/src/generation/Editor.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-9" />
+    <option name="x" value="-10" />
     <option name="width" value="1200" />
-    <option name="height" value="1039" />
+    <option name="height" value="1040" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -186,6 +186,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -208,13 +209,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558441314600" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558517688721" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -364,7 +364,14 @@
       <option name="project" value="LOCAL" />
       <updated>1558365949961</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Editeur fonctionel">
+      <created>1558441546211</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1558441546211</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -381,9 +388,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.47890297" visible="true" weight="0.16778524" />
-      <window_info id="Structure" order="1" sideWeight="0.52109706" side_tool="true" visible="true" weight="0.16778524" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4764151" visible="true" weight="0.17181209" />
+      <window_info id="Structure" order="1" sideWeight="0.5235849" side_tool="true" visible="true" weight="0.17181209" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
@@ -392,12 +400,12 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49932885" weight="0.3286119" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39943343" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39943343" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="8" sideWeight="0.49932885" visible="true" weight="0.3286119" />
+      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49932885" weight="0.3286119" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.3286119" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50067115" side_tool="true" weight="0.3286119" />
@@ -469,7 +477,26 @@
     <MESSAGE value="Voiture qui marche et couleur des routes" />
     <MESSAGE value="createur de map" />
     <MESSAGE value="creta city work" />
-    <option name="LAST_COMMIT_MESSAGE" value="creta city work" />
+    <MESSAGE value="Editeur fonctionel" />
+    <option name="LAST_COMMIT_MESSAGE" value="Editeur fonctionel" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/generation/Editor.java</url>
+          <line>116</line>
+          <properties />
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/generation/Editor.java</url>
+          <line>147</line>
+          <properties />
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="uml://JAVA/generation" />
@@ -610,10 +637,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/generation/main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="53" column="29" lean-forward="true" selection-start-line="53" selection-start-column="29" selection-end-line="53" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#742#743#0" expanded="true" />
+            <element signature="e#800#801#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/generation/Drawing.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-866">
-          <caret line="79" selection-start-line="79" selection-end-line="79" />
+        <state relative-caret-position="170">
+          <caret line="34" column="57" lean-forward="true" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="57" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1054#1055#0" expanded="true" />
@@ -624,18 +663,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/generation/Editor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-102">
-          <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/generation/main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="85" column="43" selection-start-line="85" selection-start-column="43" selection-end-line="85" selection-end-column="43" />
+        <state relative-caret-position="-165">
+          <caret line="123" column="15" lean-forward="true" selection-start-line="123" selection-start-column="15" selection-end-line="123" selection-end-column="15" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
