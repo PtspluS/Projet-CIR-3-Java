@@ -203,6 +203,9 @@ public class NetWork implements java.io.Serializable{
         this.sizeY = sizeY;
     }
 
+    /*cette fonction vient prendre deux route en entree et renvoie un pointeur vers un obj intersection
+    * le pointeur peur etre null si il n'y pas d'intersection ou une intersection si il y en a une qui
+    * se situe pas sur une des villes de depart ou de fin et qui se situe bien sur le plan */
     public Intersection possibleNewIntersection (Road a, Road b) {
         double m1 =0, m2 = 0, c1 =0, c2=0;
         if(a.getEquationCarthesienneReduite()[1] != 0) {
