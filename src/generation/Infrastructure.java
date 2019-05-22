@@ -1,5 +1,3 @@
-package generation;
-
 public abstract class Infrastructure implements java.io.Serializable{
     protected double x;
     protected double y;

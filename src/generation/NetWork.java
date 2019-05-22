@@ -1,5 +1,3 @@
-package generation;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -38,61 +36,6 @@ public class NetWork implements java.io.Serializable{
 
     public NetWork (ArrayList<City> city){
         this.cities.addAll(city);
-    }
-
-    @Deprecated
-    //auto complete generation of map each city is link with all the others cities by random type of road
-    public NetWork (boolean autoCompletRoads, City ... city){//genere une carte ou chaque ville est reliee a chaque autre ville
-        double xMax = 0, yMax = 0;
-        for (City c: city  ) {
-            if(c.getX()>xMax){
-                    xMax = c.getX();
-                }
-                if(c.getY()>yMax){
-                    yMax = c.getY();
-                }
-            this.cities.add(c);
-        }
-        this.sizeX = xMax;
-        this.sizeY = yMax;
-        if(autoCompletRoads){
-            int nbRoad = 0;
-            for (City a : this.cities ) {
-                for (City b : this.cities){
-                    if(a!=b) {
-                        if (!areLink(a,b)) {
-                            int tmp=(int)(Math.random()*3);
-                            Road r;
-                           switch (tmp){
-                               case 0:
-                                   r= new Road(a, b, Road.TypeRoute.DEPARTEMENTALE );
-                                   break;
-
-                               case 1:
-                                   r= new Road(a, b, Road.TypeRoute.NATIONALE );
-                                   break;
-
-                               default:
-                                   r= new Road(a, b, Road.TypeRoute.AUTOROUTE );
-                                   break;
-
-                            }
-
-                            r.setName("N" + nbRoad);
-                            this.roads.add(r);
-                            nbRoad++;
-                        }
-                    }
-                }
-            }
-            for (Road a : this.roads){
-                for ( Road b : this.roads) {
-                    if (a != b) {
-                        this.addNewIntersection(a, b);
-                    }
-                }
-            }
-        }
     }
 
     public NetWork (boolean autCompleteRoads, ArrayList<City> cities) {
@@ -141,15 +84,30 @@ public class NetWork implements java.io.Serializable{
                 }
             }
         }
-        for (Road a : this.roads){//cree toutes les intersections sans optimisation
-            for ( Road b : this.roads) {
-                if (a != b) {
-                    this.addNewIntersection(a, b);
+
+        boolean stillCrossings = false;
+
+        do {
+            stillCrossings = false;
+            for (int i = 0; i < this.roads.size(); i++) {//cree toutes les intersections sans optimisation
+                Road a = this.roads.get(i);
+                for (int j = 0; j < this.roads.size(); j++) {
+                    Road b = this.roads.get(j);
+                    if (a != b) {
+                        if (this.possibleNewIntersection(a, b) != null) {
+                            stillCrossings = true;
+                            break;
+                        }
+                    }
                 }
+                if (stillCrossings) break;
             }
-        }
+        }while(stillCrossings);
+
+
         //verifie si une route peut pointer vers une nouvelle inteersections plus proche pour limiter les intersections
-        for (Road r: this.roads) {
+        /*for (int a = 0; a<this.roads.size(); a++) {
+            Road r = this.roads.get(a);
             for (Intersection i : this.cross){
                 if(distancePointLine(r,i)<ratioDistance){
                     updateIntersection(r);
@@ -160,7 +118,7 @@ public class NetWork implements java.io.Serializable{
                     nbRoad++;
                 }
             }
-        }
+        }*/
     }
 
     private double distancePointLine (Road r, Intersection i){//donne la distance entre un point et une droite
@@ -242,15 +200,15 @@ public class NetWork implements java.io.Serializable{
     private Intersection possibleNewIntersection (Road a, Road b) {
         double m1 =0, m2 = 0, c1 =0, c2=0;
         if(a.getEquationCarthesienneReduite()[1] != 0) {
-            m1 = a.getEquationCarthesienneReduite()[0] / a.getEquationCarthesienneReduite()[1];
-            c1 = a.getEquationCarthesienneReduite()[2]/a.getEquationCarthesienneReduite()[1];
+            m1 = - a.getEquationCarthesienneReduite()[0] / a.getEquationCarthesienneReduite()[1];
+            c1 = - a.getEquationCarthesienneReduite()[2] / a.getEquationCarthesienneReduite()[1] ;
         } else {
              m1 = a.getEquationCarthesienneReduite()[2]/ a.getEquationCarthesienneReduite()[0];
              c1 = a.getEquationCarthesienneReduite()[2];
         }
         if(b.getEquationCarthesienneReduite()[1] != 0) {
-            m2 = b.getEquationCarthesienneReduite()[0] / b.getEquationCarthesienneReduite()[1];
-            c2 = b.getEquationCarthesienneReduite()[2] / b.getEquationCarthesienneReduite()[1];
+            m2 = - b.getEquationCarthesienneReduite()[0] / b.getEquationCarthesienneReduite()[1];
+            c2 = - b.getEquationCarthesienneReduite()[2] / b.getEquationCarthesienneReduite()[1];
         } else {
              m2 = b.getEquationCarthesienneReduite()[2]/ b.getEquationCarthesienneReduite()[0];
              c2 = b.getEquationCarthesienneReduite()[2];
@@ -266,13 +224,29 @@ public class NetWork implements java.io.Serializable{
             }
             double y = m1*x+c1;
             x= -x;
+
             Intersection i = new Intersection(x, y);
+
             if(!i.equals(a.getStart()) && !i.equals(a.getEnd()) && !i.equals(b.getStart()) && !i.equals(b.getEnd())) {//on verifie que l'interection n'est pas un ville
                 double [] xTab = {a.getStart().getX(),a.getEnd().getX(),b.getStart().getX(),b.getEnd().getX()};
                 double [] yTab = {a.getStart().getY(),a.getEnd().getY(),b.getStart().getY(),b.getEnd().getY()};
+
                 if(x> arrayMin(xTab) && x< arrayMax(xTab) && y>arrayMin(yTab) && y<arrayMax(yTab)) {//on verifie que l'intersection se trouve bien sur les routes entre les villes et pas sur les droites qui les portent
-                    i.addRoad(a);
-                    i.addRoad(b);
+                    a.getEnd().removeRoad(a);
+                    b.getEnd().removeRoad(b);
+                    a.getStart().removeRoad(a);
+                    b.getStart().removeRoad(b);
+
+                    this.addNewRoad(a.getEnd(), i, a.getType());
+                    this.addNewRoad(b.getEnd(), i, b.getType());
+                    this.addNewRoad(a.getStart(), i, a.getType());
+                    this.addNewRoad(b.getStart(), i, b.getType());
+
+                    this.roads.remove(a);
+                    this.roads.remove(b);
+
+                    this.cross.add(i);
+
                     return i;
                 }
             } else {
@@ -282,38 +256,14 @@ public class NetWork implements java.io.Serializable{
         return null;
     }
 
-    private void addNewIntersection (Road a, Road b){
-        Intersection i;
-        boolean inTab = false;
-        if (this.possibleNewIntersection(a,b)!=null){
-            i = this.possibleNewIntersection(a,b);
-            i.setName("Intersection");
-            if(i.getX() != NaN && i.getY() != NaN) {
-                if(this.cross.size()==0){
-                    this.cross.add(i);
-                }
-                for(Intersection elt : this.cross){
-                    if(i.equals(elt)){//si les intersections sont confondus alors on rajoute juste les routes sur celle qui existe deja
-                        elt.addRoad(a);
-                        elt.addRoad(b);
-                        inTab = true;
-                    }
-                }
-                if(!inTab){
-                    this.cross.add(i);
-                }
-            }
-        }
-    }
-
-    private void addNewRoad(City a, City b, Road.TypeRoute t){//verifie que la route ne croise pas une autre route et si c'est le cas genere le croisement
-        City start = this.cities.get(this.cities.indexOf(a));
-        City end = this.cities.get(this.cities.indexOf(b));
-        Road r = new Road(start,end,t);
+    private void addNewRoad(Node a, Node b, Road.TypeRoute t){//verifie que la route ne croise pas une autre route et si c'est le cas genere le croisement
+        Road r = new Road(a,b,t);
         this.roads.add(r);
-        this.cities.get(this.cities.indexOf(start)).addRoad(r);
+        a.addRoad(r);
+        b.addRoad(r);
+
         for (Road road : this.roads) {//check if there is a intersection between 2 roads
-            this.addNewIntersection(r, road);
+            this.possibleNewIntersection(r, road);
         }
     }
 

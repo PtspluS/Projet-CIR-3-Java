@@ -1,5 +1,3 @@
-package generation;
-
 import java.util.ArrayList;
 
 public abstract class Node extends Infrastructure implements java.io.Serializable{
@@ -16,7 +14,6 @@ public abstract class Node extends Infrastructure implements java.io.Serializabl
     public void addRoad(Road road) {
         this.roads.add(road);
         System.out.print("New road added : ");
-        road.print();
     }
 
     public void removeRoad(Road road) {

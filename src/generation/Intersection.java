@@ -1,16 +1,14 @@
-package generation;
-
 import java.util.TreeMap;
 
 public class Intersection extends Node {
 
-    private typeIntersection typeIntersection;
+    private TypeIntersection typeIntersection;
 
-    private enum typeIntersection{
-        PRIORITY, TRAFICCIRCLE, LIGHT
+    public enum TypeIntersection{
+        PRIORITY, TRAFICCIRCLE, LIGHT, RIGHTPRIORITY
     }
 
-    public Intersection.typeIntersection getTypeIntersection() {
+    public Intersection.TypeIntersection getTypeIntersection() {
         return typeIntersection;
     }
     //je ne suis pas dur de l'utilite du seter donc dans le doute je le met e commentaire, il sera enleve si on en a pas besoin
@@ -38,7 +36,7 @@ public class Intersection extends Node {
     @Override
     public void addRoad(Road r){
         super.addRoad(r);
-        this.sortList();
+        //this.sortList();
         this.typeIntersection = this.updateStatue();
     }
 
@@ -59,16 +57,16 @@ public class Intersection extends Node {
             map.put(theta,r);
         }
         for( int i =0 ; i<this.roads.size(); i++){
-            this.roads.set(i,map.get(i));//on vient entierement modifier la liste de routes pour qu'elles soient triee par ordre de prio a droite
+            this.roads.set(i,(Road)map.values().toArray()[i]);//on vient entierement modifier la liste de routes pour qu'elles soient triee par ordre de prio a droite
         }
     }
 
-    private typeIntersection updateStatue (){//change le type d'intersection
-        if(this.roads.size() == 2){
-            if(this.roads.get(0).getType()==this.roads.get(1).getType()){//si les deux routes sont de meme type alors ca sera une prio
+    private TypeIntersection updateStatue (){//change le type d'intersection
+        if(this.roads.size() == 4){
+            if(this.roads.get(0).getType()==this.roads.get(1).getType()){//si les deux routes sont de meme type alors ca sera une priorite a droite
+                return this.typeIntersection.RIGHTPRIORITY;
+            }else {//si les deux routes sont de type diff alors ca sera une priorite
                 return this.typeIntersection.PRIORITY;
-            }else {//si les deux routes sont de type diff alors ca sera un rond point
-                return this.typeIntersection.TRAFICCIRCLE;
             }
         } else if(this.roads.size()>2){
             for (int i = 0; i<this.roads.size()-1;i++){

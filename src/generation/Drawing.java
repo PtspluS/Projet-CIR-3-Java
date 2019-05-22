@@ -1,13 +1,11 @@
-package generation;
-
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import generation.Road;
-import generation.Voiture;
+//import generation.Road;
+//import generation.Voiture;
 
 import java.util.ArrayList;
 

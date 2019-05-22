@@ -1,5 +1,3 @@
-package generation;
-
 import java.io.*;
 
 public class Export {
@@ -10,7 +8,7 @@ public class Export {
             oout = new ObjectOutputStream(file);//on cree l'objet qu'on va mettre dans le stream
 
             oout.writeObject(map);
-        } catch (final java.io.IOException e){//on attrape l'erreur possible avec le flux et le fichier
+        } catch (final IOException e){//on attrape l'erreur possible avec le flux et le fichier
             e.printStackTrace();
         } finally {
             try {

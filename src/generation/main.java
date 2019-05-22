@@ -1,7 +1,3 @@
-
-
-package generation;
-
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
@@ -30,9 +26,9 @@ public class main extends Application {
 
     public void start(Stage primaryStage) {//Fonction qui gere l'application
         City lille = new City(0, 0, "Lille");//creation des villes
-        City tourcoing = new City(1, 499, "Tourcoing");
-        City paris = new City(500, 500, "Paris");
-        City marseille = new City(500, 100, "Marseille");
+        City tourcoing = new City(100, 100, "Tourcoing");
+        City paris = new City(0, 100, "Paris");
+        City marseille = new City(100, 0, "Marseille");
         City amien = new City(321, 78, "Tourcoing");
         City B = new City(0, 450, "B");
         City E = new City(400, 0, "B");
@@ -44,10 +40,6 @@ public class main extends Application {
         cities.add(lille);
         cities.add(tourcoing);
         cities.add(marseille);
-        cities.add(B);
-        cities.add(R);
-        cities.add(E);
-        cities.add(amien);
 
         NetWork map = new NetWork(true, cities);//si on passe un tableau alors on utilise la nouvel methode
         int windowweight = 1900;
@@ -66,6 +58,10 @@ public class main extends Application {
         draw.drawcity(map);//dessin des villes
         root.getChildren().add(draw);
 
+        for(int i = 0; i < map.getCross().size();i++){
+            System.out.println(map.getCross().get(i).getRoads().size());
+        }
+
         new AnimationTimer()//gestion de l'animation
         {
             private int delay = 0;
@@ -74,9 +70,15 @@ public class main extends Application {
                 if (delay == 1) {
                     delay = 0;
                     Voiture car = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
-                    map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterAller(car, 0, 0);//lancement des voitures
+
+                    Road rrr = map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1))));
+                    if(rrr.getStart() instanceof City) rrr.debugAjouterAller(car, 0, 0);//lancement des voitures
+
                     Voiture car2 = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
-                    map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterRetour(car2, 0, 0);//lancement des voitures
+
+                    Road rrr2 = map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1))));
+                    if(rrr2.getEnd() instanceof City) rrr2.debugAjouterRetour(car2, 0, 0);//lancement des voitures
+
                 } else {
                     delay++;
                 }
