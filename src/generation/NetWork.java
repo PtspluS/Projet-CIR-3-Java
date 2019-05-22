@@ -1,3 +1,5 @@
+package generation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -121,6 +123,10 @@ public class NetWork implements java.io.Serializable{
         }*/
     }
 
+    @Deprecated
+    public NetWork(boolean b, City ... cities) {
+    }
+
     private double distancePointLine (Road r, Intersection i){//donne la distance entre un point et une droite
         double a=0,b=0,c=0,x=0,y=0;
         //coeff de r
@@ -197,7 +203,7 @@ public class NetWork implements java.io.Serializable{
         this.sizeY = sizeY;
     }
 
-    private Intersection possibleNewIntersection (Road a, Road b) {
+    public Intersection possibleNewIntersection (Road a, Road b) {
         double m1 =0, m2 = 0, c1 =0, c2=0;
         if(a.getEquationCarthesienneReduite()[1] != 0) {
             m1 = - a.getEquationCarthesienneReduite()[0] / a.getEquationCarthesienneReduite()[1];
@@ -219,11 +225,7 @@ public class NetWork implements java.io.Serializable{
         }
         else {
             double x = (c2-c1)/(m1-m2);
-            if(m1-m2 == 0){
-                x = c2-c1;
-            }
             double y = m1*x+c1;
-            x= -x;
 
             Intersection i = new Intersection(x, y);
 
@@ -232,11 +234,11 @@ public class NetWork implements java.io.Serializable{
                 double [] yTab = {a.getStart().getY(),a.getEnd().getY(),b.getStart().getY(),b.getEnd().getY()};
 
                 if(x> arrayMin(xTab) && x< arrayMax(xTab) && y>arrayMin(yTab) && y<arrayMax(yTab)) {//on verifie que l'intersection se trouve bien sur les routes entre les villes et pas sur les droites qui les portent
-                    a.getEnd().removeRoad(a);
+                    a.getEnd().removeRoad(a);//on sup les roads du noeud de fin
                     b.getEnd().removeRoad(b);
                     a.getStart().removeRoad(a);
                     b.getStart().removeRoad(b);
-
+                    //on vient couper les routes en deux sur les intersections
                     this.addNewRoad(a.getEnd(), i, a.getType());
                     this.addNewRoad(b.getEnd(), i, b.getType());
                     this.addNewRoad(a.getStart(), i, a.getType());

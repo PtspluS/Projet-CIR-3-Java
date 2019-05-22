@@ -1,3 +1,5 @@
+package generation;
+
 public class Voiture {
     // Les valeurs de vitesses seront estimees en km/h
 

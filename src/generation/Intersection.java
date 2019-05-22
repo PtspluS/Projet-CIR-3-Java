@@ -1,3 +1,5 @@
+package generation;
+
 import java.util.TreeMap;
 
 public class Intersection extends Node {

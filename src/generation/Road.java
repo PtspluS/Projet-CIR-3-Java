@@ -1,3 +1,5 @@
+package generation;
+
 import java.util.ArrayList;
 
 public class Road extends Infrastructure implements java.io.Serializable{
@@ -10,7 +12,7 @@ public class Road extends Infrastructure implements java.io.Serializable{
         this.start = start;
         this.end = end;
         this.matrixRepresentation = new double[]{end.x - start.x, end.y - start.y};
-        double a = end.x-start.x;
+        double a = -end.x+start.x;
         double b = end.y - start.y;
         double c = -a*start.x - b*start.y;
         this.equationCarthesienneReduite = new double []{a,b,c};

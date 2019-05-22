@@ -1,3 +1,5 @@
+package generation;
+
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.canvas.GraphicsContext;
