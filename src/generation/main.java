@@ -29,10 +29,10 @@ public class main extends Application {
         City tourcoing = new City(100, 100, "Tourcoing");
         City paris = new City(0, 100, "Paris");
         City marseille = new City(100, 0, "Marseille");
-        City amien = new City(321, 78, "Tourcoing");
-        City B = new City(0, 450, "B");
-        City E = new City(400, 0, "B");
-        City R = new City(250, 120, "B");
+        City amien = new City(200, 78, "amien");
+        City B = new City(0, 45, "B");
+        City E = new City(400, 0, "E");
+        City R = new City(250, 120, "R");
 
         //mise a jour du code
         ArrayList<City> cities = new ArrayList<>();
@@ -40,6 +40,7 @@ public class main extends Application {
         cities.add(lille);
         cities.add(tourcoing);
         cities.add(marseille);
+        cities.add(amien);
 
         NetWork map = new NetWork(true, cities);//si on passe un tableau alors on utilise la nouvel methode
         int windowweight = 1900;
@@ -69,12 +70,12 @@ public class main extends Application {
             public void handle(long currentNanoTime) {
                 if (delay == 1) {
                     delay = 0;
-                    Voiture car = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
+                    Voiture car = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 100);//creation des voitures
 
                     Road rrr = map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1))));
                     if(rrr.getStart() instanceof City) rrr.debugAjouterAller(car, 0, 0);//lancement des voitures
 
-                    Voiture car2 = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
+                    Voiture car2 = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 100);//creation des voitures
 
                     Road rrr2 = map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1))));
                     if(rrr2.getEnd() instanceof City) rrr2.debugAjouterRetour(car2, 0, 0);//lancement des voitures
@@ -83,7 +84,7 @@ public class main extends Application {
                     delay++;
                 }
                 for (int j = 0; j < map.getRoads().size(); j++) {//boucle de rafraichissement
-                    map.getRoads().get(j).avancerFrame(50);
+                    map.getRoads().get(j).avancerFrame(10);
                     draw.removecar();
                     draw.drawcar(map);
                 }

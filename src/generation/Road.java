@@ -10,12 +10,21 @@ public class Road extends Infrastructure implements java.io.Serializable{
         this.start = start;
         this.end = end;
         this.matrixRepresentation = new double[]{end.x - start.x, end.y - start.y};
-        double a = end.x-start.x;
-        double b = end.y - start.y;
-        double c = -a*start.x - b*start.y;
-        this.equationCarthesienneReduite = new double []{a,b,c};
+        double a = 0;
+        double infini = 0;
+        double c = 0;
 
-        this.longueur = Math.sqrt(Math.pow((a),2)+Math.pow(b,2));
+        if(end.x-start.x != 0){
+            a = (end.y-start.y)/(end.x-start.x);
+            c = - end.x * a + end.y;
+        }else{
+            infini = 1;
+            c = start.x;
+        }
+
+        this.equationCarthesienneReduite = new double []{a,c,infini};
+
+        this.longueur = Math.sqrt(Math.pow(end.x - start.x,2)+Math.pow(end.y - start.y,2));
         this.type = type;
 
         if(type == TypeRoute.AUTOROUTE){ // Nous fournissons 3 voies pour une autoroute dans les deux sens

@@ -33,7 +33,7 @@ public abstract class Infrastructure implements java.io.Serializable{
 
 
     public boolean equals(Infrastructure a){
-        if(this.x != a.getX() && this.y != a.getY()){
+        if(this.x != a.getX() || this.y != a.getY()){
             return false;
         }else {
             return true;
