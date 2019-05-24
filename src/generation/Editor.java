@@ -69,9 +69,12 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
 
     public void editor(BorderPane root,int windowwidth,int windowheight,int mapwidth,int mapheight ){//Fonction de l'editeur
         NetWork net=new NetWork();//creation du network qui va stocker les ville et les routes créée
-        double scaler;if(mapwidth/windowwidth>=mapheight/windowheight){//creation du scaler, on regarde si il faut metre a l'echelle en fonction de x ou y
-            scaler=mapwidth;
-        }else{scaler=mapheight;}
+        double scaler;
+        if(windowwidth-mapwidth<windowheight-mapheight){
+            scaler=windowwidth/mapwidth;
+
+        }else{scaler=windowheight/mapheight;
+        }
 
         VBox vbox = new VBox();// boite verticale
         vbox.setSpacing(8);
@@ -297,6 +300,10 @@ info.setTextFill(Color.RED);
         return new City(-1,-1);
 
 
+    }
+
+    public int scale(int x,int scaler){
+        return x*(scaler);
     }
 
 

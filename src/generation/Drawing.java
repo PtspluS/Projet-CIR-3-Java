@@ -25,20 +25,20 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
         this.windowwidth=windowwidth;
         this.mapheight=mapheight;
         this.mapwidth=mapwidth;
-        if(mapwidth/windowwidth>mapheight/windowheight){
-            this.scaler=mapwidth;
+        if(windowwidth-mapwidth<windowheight-mapheight){
+            this.scaler=windowwidth/mapwidth;
 
-        }else{this.scaler=mapheight;
-        System.out.println("aa"+this.scaler);}
+        }else{this.scaler=windowheight/mapheight;
+       }
 
     }
 
     public double scaleX(double tmp){//Une fonction qui met a l'echelle
-        return tmp/(this.scaler)*(this.windowwidth-30)+15;
+        return tmp*(this.scaler);
     }
 
     public double scaleY(double tmp){//Une fonction qui met a l'echelle
-        return tmp/(this.scaler)*(this.windowheight-30)+15;
+        return tmp*(this.scaler);
     }
 
     public void drawcity(NetWork map){// Fonction qui dessine les ville
