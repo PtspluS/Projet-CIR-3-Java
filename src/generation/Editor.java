@@ -103,12 +103,20 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
         hb.getChildren().addAll(label1, cityname);
         hb.setSpacing(10);
 
+        Label info = new Label ();
+info.setTextFill(Color.RED);
+        Label info2 = new Label ();
+        info2.setTextFill(Color.RED);
+
         Button go1 = new Button("Go ");//bouton de validation l'orsque la map est fini
         go1.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
+                if(net.getCities().size()<15 && net.getCities().size()>0 ){
+                    if(net.getRoads().size()<20 && net.getRoads().size()>0){
                 for(City c : net.getCities()){//On met a l'echelle la position des ville
+
                     double tmp=c.getX()/(scaler)*(windowwidth-830)+15;
                     tmp-=800;
                     tmp=(tmp-15) * (scaler) / (windowwidth - 830);
@@ -133,10 +141,14 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
 
                 root.getChildren().clear();
                 vroum(root,windowwidth,windowheight,net,mapwidth,mapheight);//On lance la simulation
-            }})
+            }else{info.setText("Nombre de route invalide  ");
+                        info2.setText("au moins 1 routes et pas plus de 20");
+                    }}else{info.setText("Nombre de ville invalide");
+                    info2.setText("au moins 1 routes et pas plus de 15");
+                }}})
             ;
 
-        vbox.getChildren().addAll(choosecity,chooseroad,choosedcity,choosedroad,choosedep,choosenat,chooseaut,hb,go1);//on range tout dans la boite verticale
+        vbox.getChildren().addAll(choosecity,chooseroad,choosedcity,choosedroad,choosedep,choosenat,chooseaut,hb,go1,info,info2);//on range tout dans la boite verticale
         root.setLeft(vbox);//on met la boite verticale a gauche
         vbox.setAlignment(Pos.BASELINE_LEFT);
 
@@ -159,6 +171,7 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
                     if((int)me.getX()>815 && (int)me.getX()<mapwidth/(scaler)*(windowwidth-30) && (int)me.getY()>15 && (int)me.getY()<mapwidth/(scaler)*(windowheight-30)) {//si le lieux du clique est dans la fenetre
                         City ville1 = new City((int) ((me.getX()-15) * (scaler) / (windowwidth - 830)), (int)( (me.getY()-15) * (scaler) / (windowheight-30)), cityname.getText());//on crée une ville dont la position est mis a l'echelle (le -15 et -30 est pour eviter que la ville depasse du cadre)
                         net.addCity(ville1);//On ajoute la ville au network
+
                         refresh(drawplace,draw,net);//on affiche
                     }}
 
@@ -296,8 +309,9 @@ map.upDateMap();
         Drawing draw=new Drawing(windowwidth,windowheight,mapwidth ,mapheight);//creation d'un objet dessin
         root.getChildren().add(draw);
         draw.drawroad(map);//dessin des routes
-        draw.drawcity(map);//dessin des villes
         draw.drawintter(map);
+        draw.drawcity(map);//dessin des villes
+
 
         new AnimationTimer()//gestion de l'animation
         {

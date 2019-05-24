@@ -222,9 +222,9 @@ public class NetWork implements java.io.Serializable{
                 y = a.getEquationCarthesienneReduite()[0] * x + a.getEquationCarthesienneReduite()[1];
             }
 
-            System.out.println("De " + a.getStart().getName() + " a " + a.getEnd().getName() + " , Soit ["+a.getEquationCarthesienneReduite()[0] +", "+a.getEquationCarthesienneReduite()[1] +", "+a.getEquationCarthesienneReduite()[2]);
-            System.out.println("De " + b.getStart().getName() + " a " + b.getEnd().getName() + " , Soit ["+b.getEquationCarthesienneReduite()[0] +", "+b.getEquationCarthesienneReduite()[1] +", "+b.getEquationCarthesienneReduite()[2]);
-            System.out.println("Intersection : ( "+x+" ; "+y+" )");
+           // System.out.println("De " + a.getStart().getName() + " a " + a.getEnd().getName() + " , Soit ["+a.getEquationCarthesienneReduite()[0] +", "+a.getEquationCarthesienneReduite()[1] +", "+a.getEquationCarthesienneReduite()[2]);
+            // System.out.println("De " + b.getStart().getName() + " a " + b.getEnd().getName() + " , Soit ["+b.getEquationCarthesienneReduite()[0] +", "+b.getEquationCarthesienneReduite()[1] +", "+b.getEquationCarthesienneReduite()[2]);
+            //System.out.println("Intersection : ( "+x+" ; "+y+" )");
 
             Intersection i = new Intersection(Math.round(x), Math.round(y));
             boolean t = false;

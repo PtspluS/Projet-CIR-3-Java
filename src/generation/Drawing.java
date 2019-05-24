@@ -27,7 +27,9 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
         this.mapwidth=mapwidth;
         if(mapwidth/windowwidth>mapheight/windowheight){
             this.scaler=mapwidth;
-        }else{this.scaler=mapheight;}
+
+        }else{this.scaler=mapheight;
+        System.out.println("aa"+this.scaler);}
 
     }
 

@@ -42,7 +42,7 @@ ArrayList<City> citytab=new ArrayList();
         citytab.add(new City(499,25,"Marseille"));
         citytab.add( new City(321,100,"Tourcoing"));
 
-        NetWork map = new NetWork(true,citytab);
+        //NetWork map = new NetWork(true,citytab);
 
 
 
@@ -50,8 +50,7 @@ ArrayList<City> citytab=new ArrayList();
         primaryStage.setTitle("Road of Tottiland");
         int windowwidth=1900;
         int windowheight=900;
-        int mapwidth=500;
-        int mapheight=500;
+
 
 
         BorderPane root = new BorderPane();//Fenetre generale
@@ -70,7 +69,9 @@ ArrayList<City> citytab=new ArrayList();
             public void handle(ActionEvent event) {
                 System.out.println("yeee");
                 root.getChildren().clear();
-                new Editor().vroum(root, windowwidth,windowheight,map,mapwidth,mapheight);
+                int mapwidth=100;
+                int mapheight=100;
+                new Editor().vroum(root, windowwidth,windowheight,maprandom(mapwidth,mapheight),mapwidth,mapheight);
             }
         });
 
@@ -87,6 +88,72 @@ ArrayList<City> citytab=new ArrayList();
         primaryStage.show();
 
     }
+
+    public NetWork maprandom(int mapsizex,int mapsizey){
+        NetWork map = new NetWork();
+        System.out.println(mapsizex);
+        System.out.println(mapsizey);
+        int nbville=(int)(Math.random()*9)+3;
+        for(int i=0;i<nbville;i++){
+            map.addCity(new City(Math.random()*(mapsizex-15),Math.random()*(mapsizey-15),Integer.toString(i)));
+                  }
+        for(City c:map.getCities()){
+            for(int i=0;i<2;i++){
+            int rand=(int)(Math.random()*nbville);
+            City ville=map.getCities().get(rand);
+            if(c!=ville) {
+                if (c.getRoads().size()==0){
+                    map.addRoad(c,ville,choostype());
+                }else{if(roadexist(c,ville)){
+                    i--;
+
+                }else{
+                    map.addRoad(c,ville,choostype());
+                }
+
+                }
+            }else{i--;}
+            }
+        }
+
+
+return map;
+        }
+
+
+        public Road.TypeRoute choostype(){
+        int rand=(int)(Math.random()*3);
+            Road.TypeRoute type= Road.TypeRoute.DEPARTEMENTALE;
+            switch (rand){
+
+                case 0:
+                    type= Road.TypeRoute.DEPARTEMENTALE;
+                    break;
+
+                case 1:
+                    type= Road.TypeRoute.NATIONALE;
+                    break;
+
+                    case 2:
+                        type= Road.TypeRoute.AUTOROUTE;
+                        break;
+            }
+        return type;
+        }
+
+    public boolean roadexist(City a,City b){
+        boolean exist=false;
+        for(Road r:a.getRoads()){
+            if(r.getStart()==b || r.getEnd()==b){
+                exist=true;
+            }
+        }
+
+        return exist;
+
+    }
+
+
 
 
 
