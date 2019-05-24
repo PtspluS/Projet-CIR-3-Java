@@ -1,8 +1,7 @@
 package generation;
-
 import java.util.ArrayList;
 
-public class City extends Node {
+public class City extends Node implements java.io.Serializable{
 
 
     public City (){
@@ -22,6 +21,4 @@ public class City extends Node {
         this.y = y;
         this.name = name;
     }
-
-
 }

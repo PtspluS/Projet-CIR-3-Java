@@ -1,4 +1,5 @@
 package generation;
+import generation.Road;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +7,7 @@ import java.util.Optional;
 
 import static java.lang.Double.NaN;
 
-public class NetWork {
+public class NetWork implements java.io.Serializable{
     private ArrayList<City> cities = new ArrayList<>();
     private ArrayList<Intersection> cross = new ArrayList<>();
     private ArrayList<Road> roads = new ArrayList<>();
@@ -40,57 +41,72 @@ public class NetWork {
         this.cities.addAll(city);
     }
 
-    public NetWork (boolean autoCompletRoads, City ... city){//genere une carte ou chaque ville est reliee a chaque autre ville
-        double xMax = 0, yMax = 0;
-        for (City c: city  ) {
-            if(c.getX()>xMax){
+    public NetWork (boolean autCompleteRoads, ArrayList<City> cities) {
+        double xMax = 0;
+        double yMax = 0;
+        double ratioDistance = 1000;//distance qui fait que l'on joint deux intersections
+        int nbRoad = 0;
+        this.cities = cities;
+        for (City c : this.cities) {//permet de trouver la taille max de la carte en x et y
+            if (c.getX() > xMax) {
                 xMax = c.getX();
             }
-            if(c.getY()>yMax){
+            if (c.getY() > yMax) {
                 yMax = c.getY();
             }
-            this.cities.add(c);
         }
         this.sizeX = xMax;
         this.sizeY = yMax;
-        if(autoCompletRoads){
-            int nbRoad = 0;
-            for (City a : this.cities ) {
-                for (City b : this.cities){
-                    if(a!=b) {
-                        if (!areLink(a,b)) {
-                            int tmp=(int)(Math.random()*3);
+        if (autCompleteRoads) {//on lit toutes les villes entre elles
+            for (City a : this.cities) {
+                for (City b : this.cities) {
+                    if (a != b) {
+                        if (!areLink(a, b)) {
+                            int tmp = (int) (Math.random() * 3);
                             Road r;
-                           switch (tmp){
-                               case 0:
-                                   r= new Road(a, b, Road.TypeRoute.DEPARTEMENTALE );
-                                   break;
+                            switch (tmp) {
+                                case 0:
 
-                               case 1:
-                                   r= new Road(a, b, Road.TypeRoute.NATIONALE );
-                                   break;
+                                    this.addNewRoad(a, b, Road.TypeRoute.DEPARTEMENTALE);
+                                    break;
 
-                               default:
-                                   r= new Road(a, b, Road.TypeRoute.AUTOROUTE );
-                                   break;
+                                case 1:
+                                    this.addNewRoad(a, b, Road.TypeRoute.NATIONALE);
+                                    break;
+
+                                default:
+                                    this.addNewRoad(a, b, Road.TypeRoute.AUTOROUTE);
+                                    break;
 
                             }
-
-                            r.setName("N" + nbRoad);
-                            this.roads.add(r);
-                            nbRoad++;
                         }
                     }
                 }
             }
-            for (Road a : this.roads){
-                for ( Road b : this.roads) {
+        }
+
+        this.upDateMap();
+    }
+
+    public void upDateMap(){ // Rajoute les intersections a notre circuit
+        boolean stillCrossings = false;
+
+        do {
+            stillCrossings = false;
+            for (int i = 0; i < this.roads.size(); i++) {//cree toutes les intersections
+                Road a = this.roads.get(i);
+                for (int j = 0; j < this.roads.size(); j++) {
+                    Road b = this.roads.get(j);
                     if (a != b) {
-                        this.addNewIntersection(a, b);
+                        if (this.possibleNewIntersection(a, b) != null) {
+                            stillCrossings = true;
+                            break;
+                        }
                     }
                 }
+                if (stillCrossings) break;
             }
-        }
+        }while(stillCrossings);
     }
 
     private boolean areLink(Node a, Node b){
@@ -144,38 +160,50 @@ public class NetWork {
 
     private Intersection possibleNewIntersection (Road a, Road b) {
         double m1 =0, m2 = 0, c1 =0, c2=0;
-        if(a.getEquationCarthesienneReduite()[1] != 0) {
-            m1 = a.getEquationCarthesienneReduite()[0] / a.getEquationCarthesienneReduite()[1];
-            c1 = a.getEquationCarthesienneReduite()[2]/a.getEquationCarthesienneReduite()[1];
-        } else {
-            m1 = a.getEquationCarthesienneReduite()[2]/ a.getEquationCarthesienneReduite()[0];
-            c1 = a.getEquationCarthesienneReduite()[2];
-        }
-        if(b.getEquationCarthesienneReduite()[1] != 0) {
-            m2 = b.getEquationCarthesienneReduite()[0] / b.getEquationCarthesienneReduite()[1];
-            c2 = b.getEquationCarthesienneReduite()[2] / b.getEquationCarthesienneReduite()[1];
-        } else {
-            m2 = b.getEquationCarthesienneReduite()[2]/ b.getEquationCarthesienneReduite()[0];
-            c2 = b.getEquationCarthesienneReduite()[2];
-        }
 
-        if(m1 == m2){
-            return null;
-        }
-        else {
-            double x = (c2-c1)/(m1-m2);
-            if(m1-m2 == 0){
-                x = c2-c1;
+        if(a.getEquationCarthesienneReduite()[0] == b.getEquationCarthesienneReduite()[0] && a.getEquationCarthesienneReduite()[2] == b.getEquationCarthesienneReduite()[2]){
+            return null; // Routes paralleles
+        } else {
+            double x = 0;
+            double y = 0;
+            if(a.getEquationCarthesienneReduite()[2] == 1){
+                x = a.getEquationCarthesienneReduite()[1];
+                y = b.getEquationCarthesienneReduite()[0] * x + b.getEquationCarthesienneReduite()[1];
+            }else if(b.getEquationCarthesienneReduite()[2] == 1){
+                x = b.getEquationCarthesienneReduite()[1];
+                y = a.getEquationCarthesienneReduite()[0] * x + a.getEquationCarthesienneReduite()[1];
+            }else{
+                x = (b.getEquationCarthesienneReduite()[1] - a.getEquationCarthesienneReduite()[1]) / (a.getEquationCarthesienneReduite()[0] - b.getEquationCarthesienneReduite()[0]);
+
+                y = a.getEquationCarthesienneReduite()[0] * x + a.getEquationCarthesienneReduite()[1];
             }
-            double y = m1*x+c1;
-            x= -x;
-            Intersection i = new Intersection(x, y);
-            if(!i.equals(a.getStart()) && !i.equals(a.getEnd()) && !i.equals(b.getStart()) && !i.equals(b.getEnd())) {//on verifie que l'interection n'est pas un ville
-                double [] xTab = {a.getStart().getX(),a.getEnd().getX(),b.getStart().getX(),b.getEnd().getX()};
-                double [] yTab = {a.getStart().getY(),a.getEnd().getY(),b.getStart().getY(),b.getEnd().getY()};
-                if(x> arrayMin(xTab) && x< arrayMax(xTab) && y>arrayMin(yTab) && y<arrayMax(yTab)) {//on verifie que l'intersection se trouve bien sur les routes entre les villes et pas sur les droites qui les portent
-                    i.addRoad(a);
-                    i.addRoad(b);
+
+            Intersection i = new Intersection(Math.round(x), Math.round(y));
+
+            if(!i.equals(a.getStart()) && !i.equals(a.getEnd()) && !i.equals(b.getStart()) && !i.equals(b.getEnd()) && x != NaN && y !=NaN) {//on verifie que l'interection n'est pas un ville
+                double [] xTaba = {a.getStart().getX(),a.getEnd().getX()};
+                double [] xTabb = {b.getStart().getX(),b.getEnd().getX()};
+                double [] yTaba = {a.getStart().getY(),a.getEnd().getY()};
+                double [] yTabb = {b.getStart().getY(),b.getEnd().getY()};
+
+                if(x >= arrayMin(xTaba) && x <= arrayMax(xTaba) && y >= arrayMin(yTaba) && y <= arrayMax(yTaba) && x >= arrayMin(xTabb) && x <= arrayMax(xTabb) && y >= arrayMin(yTabb) && y <= arrayMax(yTabb)) {//on verifie que l'intersection se trouve bien sur les routes entre les villes et pas sur les droites qui les portent
+                    a.getEnd().removeRoad(a);
+                    b.getEnd().removeRoad(b);
+                    a.getStart().removeRoad(a);
+                    b.getStart().removeRoad(b);
+
+                    this.cross.add(i);
+                    i.setName("Inter " + this.cross.size());
+
+                    this.addNewRoad(a.getEnd(), i, a.getType());
+                    this.addNewRoad(b.getEnd(), i, b.getType());
+                    this.addNewRoad(a.getStart(), i, a.getType());
+                    this.addNewRoad(b.getStart(), i, b.getType());
+
+                    this.roads.remove(a);
+                    this.roads.remove(b);
+
+                    i.sortList();
                     return i;
                 }
             } else {
@@ -185,49 +213,12 @@ public class NetWork {
         return null;
     }
 
-    private void addNewIntersection (Road a, Road b){
-        Intersection i;
-        boolean inTab = false;
-        if (this.possibleNewIntersection(a,b)!=null){
-            i = this.possibleNewIntersection(a,b);
-            i.setName("Intersection");
-            if(i.getX() != NaN && i.getY() != NaN) {
-                if(this.cross.size()==0){
-                    this.cross.add(i);
-                }
-                for(Intersection elt : this.cross){
-                    if(i.equals(elt)){//si les intersections sont confondus alors on rajoute juste les routes sur celle qui existe deja
-                        elt.addRoad(a);
-                        elt.addRoad(b);
-                        inTab = true;
-                    }
-                }
-                if(!inTab){
-                    this.cross.add(i);
-                }
-            }
-        }
-    }
-
-    private void addNewRoad(City a, City b, Road.TypeRoute t){//verifie que la route ne croise pas une autre route et si c'est le cas genere le croisement
-        City start = this.cities.get(this.cities.indexOf(a));
-        City end = this.cities.get(this.cities.indexOf(b));
-        Road r = new Road(start,end,t);
+    public void addNewRoad(Node a, Node b, Road.TypeRoute t){ // Ajoute une route au circuit
+        Road r = new Road(a,b,t);
         this.roads.add(r);
-        this.cities.get(this.cities.indexOf(start)).addRoad(r);
-        for (Road road : this.roads) {//check if there is a intersection between 2 roads
-            this.addNewIntersection(r, road);
-        }
+        a.addRoad(r);
+        b.addRoad(r);
     }
-
-    public void addRoad(City a, City b,Road.TypeRoute t){
-        try{
-            this.addNewRoad(a,b,t);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
 
     public void print(){
         System.out.println("This network is composed by "+this.cities.size()+" cities which are :");
@@ -261,6 +252,23 @@ public class NetWork {
             }
         }
         return min;
+    }
+
+    public void addCity(City ville){
+        this.cities.add(ville);
+    }
+
+    public void removeCity(City ville){
+        this.cities.remove(cities.indexOf(ville));
+    }
+
+    public void removeRoute(Road r){
+        this.roads.remove(roads.indexOf(r));
+        for(City c:this.cities){
+            if(c.roads.contains(r)){
+                c.removeRoad(r);
+            }
+        }
     }
 
     public static double arrayMax (double [] tab){

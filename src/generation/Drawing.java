@@ -8,30 +8,38 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import generation.Road;
 import generation.Voiture;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
 public class Drawing extends Parent {// Classe qui rassemble tout es objets a dessiner
-    private int windowweight;
-    private int windoheight;
-    private double mapweight;
+    private int windowwidth;
+    private int windowheight;
+    private double mapwidth;
     private double mapheight;
+    private double scaler;
     private Group car;
 
-    Drawing(int windowweight,int windoheight,double mapweight,double mapheight){//Constructeur, initialisation des vaviable de taille de fenetre
-        this.windoheight=windoheight;
-        this.windowweight=windowweight;
+    Drawing(int windowwidth,int windowheight,double mapwidth,double mapheight){//Constructeur, initialisation des vaviable de taille de fenetre
+        this.windowheight=windowheight;
+        this.windowwidth=windowwidth;
         this.mapheight=mapheight;
-        this.mapweight=mapweight;
+        this.mapwidth=mapwidth;
+        if(windowwidth/windowheight>mapwidth/mapheight){
+            this.scaler=windowheight/mapheight;
+
+        }else{
+            this.scaler=windowwidth/mapwidth;
+       }
 
     }
 
     public double scaleX(double tmp){//Une fonction qui met a l'echelle
-        return tmp/(this.mapweight)*(this.windowweight-30)+15;
+        return tmp*(this.scaler);
     }
 
     public double scaleY(double tmp){//Une fonction qui met a l'echelle
-        return tmp/(this.mapheight)*(this.windoheight-30)+15;
+        return tmp*(this.scaler);
     }
 
     public void drawcity(NetWork map){// Fonction qui dessine les ville
@@ -40,6 +48,7 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
         for(City c:map.getCities()){
 
             Circle cercle = new Circle();//les villes sont des cercles
+
             cercle.setCenterX(scaleX(c.getX()));
             cercle.setCenterY(scaleY(c.getY()));
             cercle.setRadius(10);
@@ -52,6 +61,12 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
         }
 
     }
+
+
+
+
+
+
 
     public void drawroad(NetWork map){// Dessin des routes
         Group road= new Group();//groupe de dessins des routes
@@ -89,7 +104,7 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
 
                 case AUTOROUTE:
                     bordure.setStroke(Color.BLACK);
-                    bordure.setStrokeWidth(13);
+                    bordure.setStrokeWidth(12);
                     line.setStroke(Color.RED);
                     line.setStrokeWidth(11);
                     break;
@@ -154,5 +169,38 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
         this.getChildren().remove(car);
     }
 
+    public void removeall(){
+        this.getChildren().clear();
+    }
+
+    public void drawwindow(){
+        Rectangle r = new Rectangle();
+        this.getChildren().add(r);
+        r.setX(0);
+        r.setY(0);
+        r.setWidth(scaleX(this.mapwidth));
+        r.setHeight(scaleY(this.mapheight));
+        r.setFill(Color.TRANSPARENT);
+        r.setStroke(Color.BLACK);
+
+    }
+    public void drawintter(NetWork map){
+        Group cross = new Group();//Cration du groupe de dessin de ville
+        this.getChildren().add(cross);
+        for(Intersection i:map.getCross()){
+
+            Circle cercle = new Circle();//les villes sont des cercles
+
+            cercle.setCenterX(scaleX(i.getX()));
+            cercle.setCenterY(scaleY(i.getY()));
+            cercle.setRadius(5);
+            cercle.setFill(Color.GRAY);
+            cross.getChildren().add(cercle);
+
+
+        }
+
+
+    }
 
 }

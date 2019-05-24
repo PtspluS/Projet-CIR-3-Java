@@ -3,15 +3,21 @@
 package generation;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -20,77 +26,115 @@ import javafx.scene.canvas.Canvas;
 
 public class main extends Application{
 
-
-
-
     public static void main(String[] args) {
               Application.launch(main.class, args);
     }
 
 
-    public void start(Stage primaryStage) {//Fonction qui gere l'application
-        City lille = new City(0,0,"Lille");//creation des villes
-        City tourcoing = new City(1,499,"Tourcoing");
-        City paris = new City(500,500,"Paris");
-        City marseille = new City(500,100,"Marseille");
-        City amien = new City(321,78,"Tourcoing");
-        City B = new City(0,450,"B");
-        City E = new City(400,0,"B");
-        City R = new City(250,120,"B");
-        NetWork map = new NetWork(true ,paris,lille,tourcoing,marseille,B,R,E,amien);
-        int windowweight=1900;
-        int windoheight=900;
-        double mapweight=500;
-        double mapheight=500;
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Road of Tottiland");
+        int windowwidth=1900;
+        int windowheight=900;
 
 
 
-        primaryStage.setTitle("Network");//creaton de la fenetre
-        Group root = new Group();//creation du groupe racine
-        Scene scene = new Scene(root, windowweight, windoheight, Color.LIGHTGREY);//creation de la scene
+        BorderPane root = new BorderPane();//Fenetre generale
+        Scene scene = new Scene(root, windowwidth, windowheight, Color.LIGHTGREY);//creation de la scene
         primaryStage.setScene(scene);
+        VBox vbox = new VBox();//boite horizontale
+        vbox.setSpacing(8);
+        Button randommap = new Button("Lets Random ! ");//bouton de lancement
+        Button create = new Button("Lets Create a map ");//bouton de l'editeur
+        vbox.getChildren().addAll(randommap,create);
 
-        Drawing draw=new Drawing(windowweight,windoheight,mapweight ,mapheight);//creation d'un objet dessin
-        draw.drawroad(map);//dessin des routes
-        draw.drawcity(map);//dessin des villes
-        root.getChildren().add(draw);
+        root.setCenter(vbox);
+        vbox.setAlignment(Pos.CENTER);
+        randommap.setOnAction(new EventHandler<ActionEvent>() {//action du bouton de lancement
+            @Override
+            public void handle(ActionEvent event) {
 
-        new AnimationTimer()//gestion de l'animation
-        {
-            public int delay = 0;
-        public void handle(long currentNanoTime)
-        {
-            if(delay==1) {
-                delay=0;
-                Voiture car = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
-                map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterAller(car, 0, 0);//lancement des voitures
-                Voiture car2 = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
-                map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterRetour(car2, 0, 0);//lancement des voitures
-            }else{
-                delay++;
+                root.getChildren().clear();
+                int mapwidth=100;
+                int mapheight=100;
+                new Editor().vroum(root, windowwidth,windowheight,maprandom(mapwidth,mapheight),mapwidth,mapheight);
             }
-            for(int j=0;j<map.getRoads().size();j++) {//boucle de rafraichissement
-                map.getRoads().get(j).avancerFrame(50);
-                draw.removecar();
-                draw.drawcar(map);
+        });
+
+        create.setOnAction(new EventHandler<ActionEvent>() {// action du bouton de l'editeur
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                root.getChildren().clear();
+                new Editor().creat(root, windowwidth,windowheight);
+
             }
-
-        }
-    }.start();
-
-
+        });
         primaryStage.show();
 
+    }
+
+    public NetWork maprandom(int mapsizex,int mapsizey){
+        NetWork map = new NetWork();
+
+        int nbville=(int)(Math.random()*9)+3;
+        for(int i=0;i<nbville;i++){
+            map.addCity(new City(Math.random()*(mapsizex-15),Math.random()*(mapsizey-15),Integer.toString(i)));
+                  }
+        for(City c:map.getCities()){
+            for(int i=c.getRoads().size();i<2;i++){
+            int rand=(int)(Math.random()*nbville);
+            City ville=map.getCities().get(rand);
+            if(c!=ville) {
+                if (c.getRoads().size()==0){
+                    map.addNewRoad(c,ville,choostype());
+                }else{if(roadexist(c,ville)){
+                    i--;
+
+                }else{
+                    map.addNewRoad(c,ville,choostype());
+                }
+
+                }
+            }else{i--;}
+            }
+        }
+
+        return map;
+    }
 
 
+    public Road.TypeRoute choostype(){
+        int rand=(int)(Math.random()*3);
+            Road.TypeRoute type= Road.TypeRoute.DEPARTEMENTALE;
+            switch (rand){
 
+                case 0:
+                    type= Road.TypeRoute.DEPARTEMENTALE;
+                    break;
 
+                case 1:
+                    type= Road.TypeRoute.NATIONALE;
+                    break;
 
+                    case 2:
+                        type= Road.TypeRoute.AUTOROUTE;
+                        break;
+            }
+        return type;
+    }
 
-}
+    public boolean roadexist(City a,City b){
+        boolean exist=false;
+        for(Road r:a.getRoads()){
+            if(r.getStart()==b || r.getEnd()==b){
+                exist=true;
+            }
+        }
 
+        return exist;
 
-
+    }
 }
 
 
