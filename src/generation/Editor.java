@@ -138,7 +138,7 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
                 for(Road rt:tmproad){
                     System.out.println(rt.getEquationCarthesienneReduite()[0]);
                     System.out.println(rt.getEquationCarthesienneReduite()[1]);
-                    net.addRoad(rt.getStart(),rt.getEnd(),rt.getType());
+                    net.addNewRoad(rt.getStart(),rt.getEnd(),rt.getType());
                 }
 
                 root.getChildren().clear();
@@ -167,7 +167,7 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
 
                 if(groupaction.getSelectedToggle()==choosecity){// SI le radiobutton city est selectioner
                     if((int)me.getX()>15 && (int)me.getX()<(windowwidth - 15) && (int)me.getY()>15 && (int)me.getY()<windowwidth-30) {//si le lieux du clique est dans la fenetre
-                        City ville1 = new City((int) ( (me.getX()) / scaler), (int)( (me.getY()) / scaler), cityname.getText());//on crée une ville dont la position est mis a l'echelle (le -15 et -30 est pour eviter que la ville depasse du cadre)
+                        City ville1 = new City(( (me.getX()) / scaler), ( (me.getY()) / scaler), cityname.getText());//on crée une ville dont la position est mis a l'echelle (le -15 et -30 est pour eviter que la ville depasse du cadre)
                         net.addCity(ville1);//On ajoute la ville au network
 
                         refresh(drawplace,draw,net);//on affiche
@@ -213,7 +213,7 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
 
                                 }
                                 if(!exist){//Si la route n'existe pas on crée la route
-                                    net.addRoad(villesave,ville,route);
+                                    net.addNewRoad(villesave,ville,route);
                                     refresh(drawplace,draw,net);
                                     villesave=new City(-1,-1);
                                     }}
@@ -305,7 +305,7 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
 
 
     public void vroum(BorderPane root,int windowwidth,int windowheight,NetWork map,double mapwidth,double mapheight){ //Fonction qui gere la simulation
-map.upDateMap();
+        map.upDateMap();
 
         //creaton de la fenetre
         Drawing draw=new Drawing(windowwidth,windowheight,mapwidth ,mapheight);//creation d'un objet dessin
@@ -320,32 +320,28 @@ map.upDateMap();
             public int delay = 0;
             public void handle(long currentNanoTime)
             {
-                if(delay==10) {
+                if(delay==1) {
                     delay=0;
-                    Voiture car = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
-                    map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterAller(car, 0, 0);//lancement des voitures
-                    Voiture car2 = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 10);//creation des voitures
-                    map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1)))).debugAjouterRetour(car2, 0, 0);//lancement des voitures
-                }else{
+                    Voiture car = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 100);//creation des voitures
+
+                    Road rrr = map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1))));
+                    if(rrr.getStart() instanceof City) rrr.ajouterVoitureAller(car, 0);//lancement des voitures
+
+                    Voiture car2 = new Voiture(Math.random() * 5 + 10, Math.random() * 30 + 100);//creation des voitures
+
+                    Road rrr2 = map.getRoads().get((int) (Math.round(Math.random() * (map.getRoads().size() - 1))));
+                    if(rrr2.getEnd() instanceof City) rrr2.ajouterVoitureRetour(car2, 0);//lancement des voitures
+
+                } else {
                     delay++;
                 }
-                for(int j=0;j<map.getRoads().size();j++) {//boucle de rafraichissement
-                    map.getRoads().get(j).avancerFrame(50);
+                for (int j = 0; j < map.getRoads().size(); j++) {//boucle de rafraichissement
+                    map.getRoads().get(j).avancerFrame(1);
                 }
                 draw.removecar();
                 draw.drawcar(map);
 
             }
         }.start();
-
-
-
-
-
-
-
-
-
-
     }
 }

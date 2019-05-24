@@ -1,9 +1,9 @@
 package generation;
-import generation.Infrastructure;
 import generation.Road;
 
 import java.util.ArrayList;
 
+// Noeud de notre carte, ville ou intersection
 public abstract class Node extends Infrastructure implements java.io.Serializable{
     protected ArrayList<Road> roads = new ArrayList<>();
 

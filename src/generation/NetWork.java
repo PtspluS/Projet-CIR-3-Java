@@ -1,5 +1,4 @@
 package generation;
-import generation.City;
 import generation.Road;
 
 import java.util.ArrayList;
@@ -87,30 +86,14 @@ public class NetWork implements java.io.Serializable{
         }
 
         this.upDateMap();
-
-
-        //verifie si une route peut pointer vers une nouvelle intersections plus proche pour limiter les intersections
-        /*for (int a = 0; a<this.roads.size(); a++) {
-            Road r = this.roads.get(a);
-            for (Intersection i : this.cross){
-                if(distancePointLine(r,i)<ratioDistance){
-                    updateIntersection(r);
-                    r.setEnd(i);
-                    Road tps = new Road(i,r.getEnd(),r.getType());
-                    tps.setName("N"+nbRoad);
-                    this.roads.add(tps);
-                    nbRoad++;
-                }
-            }
-        }*/
     }
 
-    public void upDateMap(){
+    public void upDateMap(){ // Rajoute les intersections a notre circuit
         boolean stillCrossings = false;
 
         do {
             stillCrossings = false;
-            for (int i = 0; i < this.roads.size(); i++) {//cree toutes les intersections sans optimisation
+            for (int i = 0; i < this.roads.size(); i++) {//cree toutes les intersections
                 Road a = this.roads.get(i);
                 for (int j = 0; j < this.roads.size(); j++) {
                     Road b = this.roads.get(j);
@@ -124,33 +107,6 @@ public class NetWork implements java.io.Serializable{
                 if (stillCrossings) break;
             }
         }while(stillCrossings);
-    }
-
-    private double distancePointLine (Road r, Intersection i){//donne la distance entre un point et une droite
-        double a=0,b=0,c=0,x=0,y=0;
-        //coeff de r
-        a = r.getEquationCarthesienneReduite()[0];
-        b = r.getEquationCarthesienneReduite()[1];
-        c = r.getEquationCarthesienneReduite()[2];
-
-        //coordonnee de i
-        x = i.getX();
-        y = i.getY();
-        double equation = Math.abs(a*x+b*y+c)/Math.sqrt(Math.pow(a,2)+Math.pow(b,2));
-
-        return equation;
-    }
-
-    private void updateIntersection(Road r){//check et supprime les routes qui sont dans des intersections, supprime l'intersection si elle ne contient qu'une route
-        for(Intersection i : this.cross){
-            if(i.roads.contains(r)){
-                if(i.roads.size()==2){
-                    this.cross.remove(i);
-                } else {
-                    i.roads.remove(r);
-                }
-            }
-        }
     }
 
     private boolean areLink(Node a, Node b){
@@ -222,21 +178,7 @@ public class NetWork implements java.io.Serializable{
                 y = a.getEquationCarthesienneReduite()[0] * x + a.getEquationCarthesienneReduite()[1];
             }
 
-           // System.out.println("De " + a.getStart().getName() + " a " + a.getEnd().getName() + " , Soit ["+a.getEquationCarthesienneReduite()[0] +", "+a.getEquationCarthesienneReduite()[1] +", "+a.getEquationCarthesienneReduite()[2]);
-            // System.out.println("De " + b.getStart().getName() + " a " + b.getEnd().getName() + " , Soit ["+b.getEquationCarthesienneReduite()[0] +", "+b.getEquationCarthesienneReduite()[1] +", "+b.getEquationCarthesienneReduite()[2]);
-            //System.out.println("Intersection : ( "+x+" ; "+y+" )");
-
             Intersection i = new Intersection(Math.round(x), Math.round(y));
-            boolean t = false;
-            boolean u = false;
-            boolean p = false;
-            boolean o = false;
-            if(b.getStart().getName() == "amien"){
-                t = !i.equals(a.getStart());
-                u = !i.equals(a.getEnd());
-                p = !i.equals(b.getStart());
-                o = !i.equals(b.getEnd());
-            }
 
             if(!i.equals(a.getStart()) && !i.equals(a.getEnd()) && !i.equals(b.getStart()) && !i.equals(b.getEnd()) && x != NaN && y !=NaN) {//on verifie que l'interection n'est pas un ville
                 double [] xTaba = {a.getStart().getX(),a.getEnd().getX()};
@@ -261,6 +203,7 @@ public class NetWork implements java.io.Serializable{
                     this.roads.remove(a);
                     this.roads.remove(b);
 
+                    i.sortList();
                     return i;
                 }
             } else {
@@ -270,21 +213,12 @@ public class NetWork implements java.io.Serializable{
         return null;
     }
 
-    private void addNewRoad(Node a, Node b, Road.TypeRoute t){//verifie que la route ne croise pas une autre route et si c'est le cas genere le croisement
+    public void addNewRoad(Node a, Node b, Road.TypeRoute t){ // Ajoute une route au circuit
         Road r = new Road(a,b,t);
         this.roads.add(r);
         a.addRoad(r);
         b.addRoad(r);
     }
-
-    public void addRoad(Node a, Node b,Road.TypeRoute t){
-        try{
-            this.addNewRoad(a,b,t);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
 
     public void print(){
         System.out.println("This network is composed by "+this.cities.size()+" cities which are :");
@@ -306,6 +240,20 @@ public class NetWork implements java.io.Serializable{
         System.out.println("This network had "+this.cross.size()+" intersection");
     }
 
+    public static double arrayMin (double [] tab){
+        double min = 0;
+        boolean f = false;
+        for (double elt: tab) {
+            if(!f){
+                min = elt;
+                f = true;
+            }else{
+                min = Math.min(min,elt);
+            }
+        }
+        return min;
+    }
+
     public void addCity(City ville){
         this.cities.add(ville);
     }
@@ -321,20 +269,6 @@ public class NetWork implements java.io.Serializable{
                 c.removeRoad(r);
             }
         }
-    }
-
-    public static double arrayMin (double [] tab){
-        double min = 0;
-        boolean f = false;
-        for (double elt: tab) {
-            if(!f){
-                min = elt;
-                f = true;
-            }else{
-                min = Math.min(min,elt);
-            }
-        }
-        return min;
     }
 
     public static double arrayMax (double [] tab){

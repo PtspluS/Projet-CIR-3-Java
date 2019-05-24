@@ -1,5 +1,5 @@
 package generation;
-import generation.City;
+import generation.Voiture;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ public class Road extends Infrastructure implements java.io.Serializable{
     private Node start;
     private Node end;
     private double[] matrixRepresentation ;
-    private double [] equationCarthesienneReduite;//equation carthesienne du style ax+by+c = 0 => a/c x + b/c y = 0
+    private double [] equationCarthesienneReduite;//equation carthesienne du style ax + c = y => de dorme [a,c,infini] infini precise si la courbe est a la verticale (cas ou a est infini)
 
     public Road (Node start, Node end, TypeRoute type) {
         this.start = start;
@@ -64,7 +64,7 @@ public class Road extends Infrastructure implements java.io.Serializable{
             this.limitationVitesse = 80;
             this.distanceSecurite = 0.55;
 
-            ArrayList< Voiture > voie1A = new ArrayList<>();
+            ArrayList<Voiture> voie1A = new ArrayList<>();
             ArrayList< Voiture > voie1R = new ArrayList<>();
 
             this.voiesAller.add(voie1A);
@@ -86,18 +86,6 @@ public class Road extends Infrastructure implements java.io.Serializable{
 
     public void setEnd(Node end) {
         this.end = end;
-    }
-
-    public double[] getMatrixRepresentation() {
-        return matrixRepresentation;
-    }
-
-    public double equationCartesienneY (double x){// y = ...
-        return (x-this.start.x)*this.matrixRepresentation[1]/this.matrixRepresentation[0]+this.start.y;
-    }
-
-    public double equationCartesienneX (double y){// x = ...
-        return -((y-this.start.y)*this.matrixRepresentation[0])/this.matrixRepresentation[1]+this.start.x;
     }
 
     public void printMatrixRepresentation (){
@@ -122,9 +110,6 @@ public class Road extends Infrastructure implements java.io.Serializable{
         this.equationCarthesienneReduite = equationCarthesienneReduite;
     }
 
-
-    //partie d'antoine
-    //si ca merde c'est ici
     // Les valeurs de vitesses seront estimees en km/h
 
     // Enumeration des types de routes
@@ -169,11 +154,21 @@ public class Road extends Infrastructure implements java.io.Serializable{
 
 
     public void ajouterVoitureAller(Voiture voiture, int voie){ // Entree d'une voiture dans le sens de l'aller
-        this.voiesAller.get(voie).add(0,voiture);
+        if(this.voiesAller.get(voie).size() == 0) {
+            this.voiesAller.get(voie).add(0, voiture);
+            return;
+        }
+        if(this.voiesAller.get(voie).get(0).getPositionActuelle() > this.distanceSecurite)
+            this.voiesAller.get(voie).add(0,voiture);
     }
 
     public void ajouterVoitureRetour(Voiture voiture, int voie){ // Entree d'une voiture dans le sens du retour
-        this.voiesRetour.get(voie).add(0,voiture);
+        if(this.voiesRetour.get(voie).size() == 0) {
+            this.voiesRetour.get(voie).add(0, voiture);
+            return;
+        }
+        if(this.voiesRetour.get(voie).get(0).getPositionActuelle() > this.distanceSecurite)
+            this.voiesRetour.get(voie).add(0,voiture);
     }
 
     public int[] voituresAlentoursPosition(ArrayList< Voiture > voie, double position){ // Retourne les indexs des voitures situes avant et apres la position donnee dans la voie demandee
@@ -294,6 +289,7 @@ public class Road extends Infrastructure implements java.io.Serializable{
                     followingRoad = tab.get( (i+tabsize/2) % tabsize ); // Sur une intersection de 2 routes la route suivante est toujours ( i+2 )%4
                 }
             }
+            if(followingRoad == null) followingRoad = tab.get( (tabsize/2) % tabsize );
 
             if(endType == Intersection.TypeIntersection.PRIORITY){
                 ourPriority = true; // Si nous sommes une autoroute, nous avons obligatoirement la priorite
@@ -315,6 +311,11 @@ public class Road extends Infrastructure implements java.io.Serializable{
             for(int j = voie.get(i).size() - 1; j >= 0; j--){
                 Voiture voituret = voie.get(i).get(j);
 
+                int nextVoie = i;
+                if(!endIsCity){
+                    if(followingRoad.getVoiesRetour().size() - 1 < nextVoie) nextVoie = followingRoad.getVoiesRetour().size() - 1;
+                }
+
                 // Voiture la plus avancee de la voie
                 if(j == voie.get(i).size() - 1) {
 
@@ -331,37 +332,37 @@ public class Road extends Infrastructure implements java.io.Serializable{
                                 double distanceSupp = voituret.getPositionActuelle() + voituret.getVitesseActuelle() * temps / 3600 + voituret.getAccelerationActuelle() * Math.pow(temps / 3600, 2) / 2 - this.longueur;
 
                                 // Si la route suivante est dans le sens du retour, et qu'il y a de la place
-                                if(endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(i).size() == 0) {
+                                if(endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(nextVoie).size() == 0) {
                                     // Il n'y a pas de voitures sur la voie donc nous pouvons ajouter la voiture
                                     voituret.setPositionActuelle(distanceSupp);
-                                    followingRoad.ajouterVoitureRetour(voituret, i);
+                                    followingRoad.ajouterVoitureRetour(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
-                                }else if (endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(i).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
+                                }else if (endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(nextVoie).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
                                     voituret.setPositionActuelle(0);
 
-                                    if (followingRoad.getVoiesRetour().get(i).get(0).getPositionActuelle() - this.distanceSecurite > distanceSupp) {
+                                    if (followingRoad.getVoiesRetour().get(nextVoie).get(0).getPositionActuelle() - this.distanceSecurite > distanceSupp) {
                                         voituret.setPositionActuelle(distanceSupp); // Si nous ne risquons pas de foncer dans une autre voiture
                                     }
 
                                     // Nous pouvons ajouter la voiture
-                                    followingRoad.ajouterVoitureRetour(voituret, i);
+                                    followingRoad.ajouterVoitureRetour(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
 
                                     // Si la route est dans le sens de l'aller
-                                } else if(endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(i).size() == 0) {
+                                } else if(endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(nextVoie).size() == 0) {
                                     // Il n'y a pas de voitures sur la voie donc nous pouvons ajouter la voiture
                                     voituret.setPositionActuelle(distanceSupp);
-                                    followingRoad.ajouterVoitureAller(voituret, i);
+                                    followingRoad.ajouterVoitureAller(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
-                                }else if (endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(i).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
+                                }else if (endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(nextVoie).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
                                     voituret.setPositionActuelle(0);
 
-                                    if (followingRoad.getVoiesAller().get(i).get(0).getPositionActuelle() - this.distanceSecurite > distanceSupp) {
+                                    if (followingRoad.getVoiesAller().get(nextVoie).get(0).getPositionActuelle() - this.distanceSecurite > distanceSupp) {
                                         voituret.setPositionActuelle(distanceSupp); // Si nous ne risquons pas de foncer dans une autre voiture
                                     }
 
                                     // Nous pouvons ajouter la voiture
-                                    followingRoad.ajouterVoitureAller(voituret, i);
+                                    followingRoad.ajouterVoitureAller(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
 
                                     // Dans ce cas, il nous est impossible d'ajouter la voiture car la voie suivante n'a pas assez de place
@@ -404,7 +405,7 @@ public class Road extends Infrastructure implements java.io.Serializable{
                                     for (int k2 = 0; k2 < voieTemp.size(); k2++) {
                                         if(voieTemp.get(k2).size() == 0){
                                             continue;
-                                        }else if (voieTemp.get(k2).get(voieTemp.get(k2).size() - 1).getPositionActuelle() > followingRoad.getLongueur() - 2 * followingRoad.getDistanceSecurite()) {
+                                        }else if (voieTemp.get(k2).get(voieTemp.get(k2).size() - 1).getPositionActuelle() > tabRoads.get(k).getLongueur() - 2 * tabRoads.get(k).getDistanceSecurite()) {
                                             voieLibre = false;
                                         }
                                     }
@@ -413,7 +414,7 @@ public class Road extends Infrastructure implements java.io.Serializable{
                                     for (int k2 = 0; k2 < voieTemp.size(); k2++) {
                                         if(voieTemp.get(k2).size() == 0){
                                             continue;
-                                        }else if (voieTemp.get(k2).get(voieTemp.get(k2).size() - 1).getPositionActuelle() > followingRoad.getLongueur() - 2 * followingRoad.getDistanceSecurite()) {
+                                        }else if (voieTemp.get(k2).get(voieTemp.get(k2).size() - 1).getPositionActuelle() > tabRoads.get(k).getLongueur() - 2 * tabRoads.get(k).getDistanceSecurite()) {
                                             voieLibre = false;
                                         }
                                     }
@@ -428,29 +429,29 @@ public class Road extends Infrastructure implements java.io.Serializable{
                             } else { // On a la voie libre
 
                                 // Si la route suivante est dans le sens du retour, et qu'il y a de la place
-                                if(endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(i).size() == 0) {
+                                if(endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(nextVoie).size() == 0) {
                                     // Il n'y a pas de voitures sur la voie donc nous pouvons ajouter la voiture
                                     voituret.setPositionActuelle(0);
-                                    followingRoad.ajouterVoitureRetour(voituret, i);
+                                    followingRoad.ajouterVoitureRetour(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
-                                }else if (endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(i).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
+                                }else if (endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(nextVoie).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
                                     voituret.setPositionActuelle(0);
 
                                     // Nous pouvons ajouter la voiture
-                                    followingRoad.ajouterVoitureRetour(voituret, i);
+                                    followingRoad.ajouterVoitureRetour(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
 
                                     // Si la route est dans le sens de l'aller
-                                } else if(endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(i).size() == 0) {
+                                } else if(endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(nextVoie).size() == 0) {
                                     // Il n'y a pas de voitures sur la voie donc nous pouvons ajouter la voiture
                                     voituret.setPositionActuelle(0);
-                                    followingRoad.ajouterVoitureAller(voituret, i);
+                                    followingRoad.ajouterVoitureAller(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
-                                }else if (endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(i).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
+                                }else if (endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(nextVoie).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
                                     voituret.setPositionActuelle(0);
 
                                     // Nous pouvons ajouter la voiture
-                                    followingRoad.ajouterVoitureAller(voituret, i);
+                                    followingRoad.ajouterVoitureAller(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
 
                                     // Dans ce cas, il nous est impossible d'ajouter la voiture car la voie suivante n'a pas assez de place
@@ -555,29 +556,29 @@ public class Road extends Infrastructure implements java.io.Serializable{
                             } else { // On a la voie libre
 
                                 // Si la route suivante est dans le sens du retour, et qu'il y a de la place
-                                if(endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(i).size() == 0) {
+                                if(endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(nextVoie).size() == 0) {
                                     // Il n'y a pas de voitures sur la voie donc nous pouvons ajouter la voiture
                                     voituret.setPositionActuelle(0);
-                                    followingRoad.ajouterVoitureRetour(voituret, i);
+                                    followingRoad.ajouterVoitureRetour(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
-                                }else if (endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(i).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
+                                }else if (endNode == followingRoad.getEnd() && followingRoad.getVoiesRetour().get(nextVoie).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
                                     voituret.setPositionActuelle(0);
 
                                     // Nous pouvons ajouter la voiture
-                                    followingRoad.ajouterVoitureRetour(voituret, i);
+                                    followingRoad.ajouterVoitureRetour(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
 
                                     // Si la route est dans le sens de l'aller
-                                } else if(endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(i).size() == 0) {
+                                } else if(endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(nextVoie).size() == 0) {
                                     // Il n'y a pas de voitures sur la voie donc nous pouvons ajouter la voiture
                                     voituret.setPositionActuelle(0);
-                                    followingRoad.ajouterVoitureAller(voituret, i);
+                                    followingRoad.ajouterVoitureAller(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
-                                }else if (endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(i).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
+                                }else if (endNode == followingRoad.getStart() && followingRoad.getVoiesAller().get(nextVoie).get(0).getPositionActuelle() - this.distanceSecurite > 0) {
                                     voituret.setPositionActuelle(0);
 
                                     // Nous pouvons ajouter la voiture
-                                    followingRoad.ajouterVoitureAller(voituret, i);
+                                    followingRoad.ajouterVoitureAller(voituret, nextVoie);
                                     voie.get(i).remove(voituret);
 
                                     // Dans ce cas, il nous est impossible d'ajouter la voiture car la voie suivante n'a pas assez de place
@@ -588,7 +589,6 @@ public class Road extends Infrastructure implements java.io.Serializable{
                                 }
                             }
 
-                            // Si nous sommes dans la zone de ralentissement
                         } else { // Si nous n'arrivons pas en fin de route a la prochaine frame
                             voituret.setAccelerationActuelle(voituret.getAccelerationMax());
                             voituret.setVitesseActuelle(voituret.getVitesseActuelle() + temps / 3600 * voituret.getAccelerationActuelle());
@@ -791,30 +791,6 @@ public class Road extends Infrastructure implements java.io.Serializable{
             // Accelerations dans toutes les voies
             this.acceleration(temps,false);
             this.acceleration(temps,true);
-        }
-    }
-
-    // ------------------------------------------------
-    // FONCTIONS DEBUGS
-    // ------------------------------------------------
-
-    public void debugAjouterAller(Voiture voiture, int voie, double position){ // Placement d'une voiture dans une voie d'aller, et a une certaine position
-        int[] indexs = voituresAlentoursPosition(this.voiesAller.get(voie), position);
-        voiture.setPositionActuelle(position);
-        if(indexs[1] == -1){
-            this.voiesAller.get(voie).add(voiture);
-        }else{
-            this.voiesAller.get(voie).add(indexs[1], voiture);
-        }
-    }
-
-    public void debugAjouterRetour(Voiture voiture, int voie, double position){ // Placement d'une voiture dans une voie de retour, et a une certaine position
-        int[] indexs = voituresAlentoursPosition(this.voiesRetour.get(voie), position);
-        voiture.setPositionActuelle(position);
-        if(indexs[1] == -1){
-            this.voiesRetour.get(voie).add(voiture);
-        }else{
-            this.voiesRetour.get(voie).add(indexs[1], voiture);
         }
     }
 }
