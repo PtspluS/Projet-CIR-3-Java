@@ -25,10 +25,11 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
         this.windowwidth=windowwidth;
         this.mapheight=mapheight;
         this.mapwidth=mapwidth;
-        if(windowwidth-mapwidth<windowheight-mapheight){
-            this.scaler=windowwidth/mapwidth;
+        if(windowwidth/windowheight>mapwidth/mapheight){
+            this.scaler=windowheight/mapheight;
 
-        }else{this.scaler=windowheight/mapheight;
+        }else{
+            this.scaler=windowwidth/mapwidth;
        }
 
     }
@@ -174,13 +175,13 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
 
     public void drawwindow(){
         Rectangle r = new Rectangle();
-        r.setX(800);
+        this.getChildren().add(r);
+        r.setX(0);
         r.setY(0);
         r.setWidth(scaleX(this.mapwidth));
         r.setHeight(scaleY(this.mapheight));
         r.setFill(Color.TRANSPARENT);
         r.setStroke(Color.BLACK);
-       this.getChildren().add(r);
 
     }
     public void drawintter(NetWork map){

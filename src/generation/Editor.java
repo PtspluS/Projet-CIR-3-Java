@@ -23,43 +23,48 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
         vbox.setSpacing(8);
 
         HBox hb = new HBox();//boite horizontale
-        Label label1 = new Label("size x:");
+        Label label1 = new Label("distance maximale de la carte en km");
         TextField inputposx = new TextField ();
         hb.getChildren().addAll(label1, inputposx);//on met dans le boite horizontal le champs de texte et son label
         hb.setSpacing(10);
         hb.setAlignment(Pos.CENTER);
 
-        HBox hb2 = new HBox();//boite horizontale
+       /* HBox hb2 = new HBox();//boite horizontale
         Label label2 = new Label("size y:");
         TextField inputposy = new TextField ();
         hb2.getChildren().addAll(label2, inputposy);//on met dans le boite horizontal le champs de texte et son label
         hb2.setSpacing(10);
         hb2.setAlignment(Pos.CENTER);
-
+*/
         Button Go = new Button("Go ");// creation d'un bouton de validation
         Go.setOnAction(new EventHandler<ActionEvent>() {//en cas d'aapui sur le bouton go on lance la fonction suivate
 
             @Override
             public void handle(ActionEvent event) {
-                int posx=0;
-                int posy=0;
+                int diagonal=0;
+
                 boolean passed=false;
                 try {//on verifie que les valeurs entré son correcte
-                    posx = Integer.parseInt(inputposx.getText());
-                    posy = Integer.parseInt(inputposy.getText());
+                    diagonal = Integer.parseInt(inputposx.getText());
+
                     passed=true;
                 }catch (Exception e){
                     inputposx.setText("wrong value");
-                    inputposy.setText("wrong value");}
-                if(passed) {
-                    root.getChildren().clear();//on vide la fenetre
-                    editor(root,windowwidth,windowheight,posx,posy);//on appele la fonction editeur qui créé la fenetre d'edition
-                }
 
-            }
+                    }
+                if(passed) {
+
+
+                    int ratio=0;
+                    root.getChildren().clear();//on vide la fenetre
+                    ratio=(int)Math.sqrt((diagonal*diagonal)/(16*16+9*9));
+                    editor(root,windowwidth,windowheight,16*ratio,9*ratio);//on appele la fonction editeur qui créé la fenetre d'edition
+                }}
+
+
         });
 
-        vbox.getChildren().addAll(hb,hb2,Go);//on met les boite et les bontons dans la boite verticale
+        vbox.getChildren().addAll(hb,Go);//on met les boite et les bontons dans la boite verticale
         root.setCenter(vbox);
         vbox.setAlignment(Pos.CENTER);
 
@@ -70,11 +75,13 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
     public void editor(BorderPane root,int windowwidth,int windowheight,int mapwidth,int mapheight ){//Fonction de l'editeur
         NetWork net=new NetWork();//creation du network qui va stocker les ville et les routes créée
         double scaler;
-        if(windowwidth-mapwidth<windowheight-mapheight){
+        if(windowwidth/windowheight>mapwidth/mapheight){
+            scaler=windowheight/mapheight;
+        }else{
             scaler=windowwidth/mapwidth;
-
-        }else{scaler=windowheight/mapheight;
         }
+
+
 
         VBox vbox = new VBox();// boite verticale
         vbox.setSpacing(8);
@@ -107,7 +114,7 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
         hb.setSpacing(10);
 
         Label info = new Label ();
-info.setTextFill(Color.RED);
+        info.setTextFill(Color.RED);
         Label info2 = new Label ();
         info2.setTextFill(Color.RED);
 
@@ -116,15 +123,7 @@ info.setTextFill(Color.RED);
 
             @Override
             public void handle(ActionEvent event) {
-                if(net.getCities().size()<15 && net.getCities().size()>0 ){
-                    if(net.getRoads().size()<20 && net.getRoads().size()>0){
-                for(City c : net.getCities()){//On met a l'echelle la position des ville
 
-                    double tmp=c.getX()/(scaler)*(windowwidth-830)+15;
-                    tmp-=800;
-                    tmp=(tmp-15) * (scaler) / (windowwidth - 830);
-                    c.setX(tmp);
-                }
                 ArrayList <Road> tmproad=new ArrayList();
                 for(Road r:net.getRoads()) {
                     System.out.println(r.getEquationCarthesienneReduite()[0]);
@@ -144,18 +143,14 @@ info.setTextFill(Color.RED);
 
                 root.getChildren().clear();
                 vroum(root,windowwidth,windowheight,net,mapwidth,mapheight);//On lance la simulation
-            }else{info.setText("Nombre de route invalide  ");
-                        info2.setText("au moins 1 routes et pas plus de 20");
-                    }}else{info.setText("Nombre de ville invalide");
-                    info2.setText("au moins 1 routes et pas plus de 15");
-                }}})
+            }})
             ;
 
         vbox.getChildren().addAll(choosecity,chooseroad,choosedcity,choosedroad,choosedep,choosenat,chooseaut,hb,go1,info,info2);//on range tout dans la boite verticale
         root.setLeft(vbox);//on met la boite verticale a gauche
         vbox.setAlignment(Pos.BASELINE_LEFT);
 
-        Drawing draw=new Drawing(windowwidth-800,windowheight,mapwidth,mapheight);//Creation de l'objet de dessin
+        Drawing draw=new Drawing(windowwidth,windowheight,mapwidth,mapheight);//Creation de l'objet de dessin
         draw.drawwindow();//dessin de la fenetre
         Group drawplace=new Group();//Creation del'endroit ou on va mettre le dessin
         drawplace.getChildren().add(draw);
@@ -171,8 +166,8 @@ info.setTextFill(Color.RED);
 
 
                 if(groupaction.getSelectedToggle()==choosecity){// SI le radiobutton city est selectioner
-                    if((int)me.getX()>815 && (int)me.getX()<mapwidth/(scaler)*(windowwidth-30) && (int)me.getY()>15 && (int)me.getY()<mapwidth/(scaler)*(windowheight-30)) {//si le lieux du clique est dans la fenetre
-                        City ville1 = new City((int) ((me.getX()-15) * (scaler) / (windowwidth - 830)), (int)( (me.getY()-15) * (scaler) / (windowheight-30)), cityname.getText());//on crée une ville dont la position est mis a l'echelle (le -15 et -30 est pour eviter que la ville depasse du cadre)
+                    if((int)me.getX()>15 && (int)me.getX()<(windowwidth - 15) && (int)me.getY()>15 && (int)me.getY()<windowwidth-30) {//si le lieux du clique est dans la fenetre
+                        City ville1 = new City((int) ( (me.getX()) / scaler), (int)( (me.getY()) / scaler), cityname.getText());//on crée une ville dont la position est mis a l'echelle (le -15 et -30 est pour eviter que la ville depasse du cadre)
                         net.addCity(ville1);//On ajoute la ville au network
 
                         refresh(drawplace,draw,net);//on affiche
@@ -227,8 +222,8 @@ info.setTextFill(Color.RED);
                         villesave=Foundnearcity((int) (me.getX()),(int)(me.getY()),net,scaler,windowwidth,windowheight);//Si le clique correspond a une ville
                         if(villesave.getX()!=-1){
                             Circle cercle = new Circle();//On crée un repert visuel sur la ville selectioner
-                            cercle.setCenterX(villesave.getX()/(scaler)*(windowwidth-830)+15);
-                            cercle.setCenterY(villesave.getY()/(scaler)*(windowheight-30)+15);
+                            cercle.setCenterX(villesave.getX()*scaler);
+                            cercle.setCenterY(villesave.getY()*scaler);
                             cercle.setRadius(15);
                             cercle.setFill(Color.TRANSPARENT);
                             cercle.setStroke(Color.BLUE);
@@ -263,8 +258,8 @@ info.setTextFill(Color.RED);
                         villesave=Foundnearcity((int) (me.getX()),(int)(me.getY()),net,scaler,windowwidth,windowheight);//Si le clique correspond a une ville
                         if(villesave.getX()!=-1){
                             Circle cercle = new Circle();//On crée un repert visuel sur la ville selectioner
-                            cercle.setCenterX(villesave.getX()/(scaler)*(windowwidth-830)+15);
-                            cercle.setCenterY(villesave.getY()/(scaler)*(windowheight-30)+15);
+                            cercle.setCenterX(villesave.getX()*scaler);
+                            cercle.setCenterY(villesave.getY()*scaler);
                             cercle.setRadius(15);
                             cercle.setFill(Color.TRANSPARENT);
                             cercle.setStroke(Color.RED);
@@ -292,7 +287,7 @@ info.setTextFill(Color.RED);
     public City Foundnearcity(int posx,int posy,NetWork net,double scaler,int windowwidth,int windowheight){//fonction qui cherche si on a cliquez sur une ville
 
         for(City i : net.getCities()){
-            if(Math.abs(i.getX()/(scaler)*(windowwidth-830)+15-posx)<=15 && Math.abs(i.getY()/(scaler)*(windowheight-30)+15-posy)<=15){
+            if(Math.abs(i.getX()*scaler-posx)<=15 && Math.abs(i.getY()*(scaler)-posy)<=15){
 
                 return i;
             }
@@ -336,9 +331,9 @@ map.upDateMap();
                 }
                 for(int j=0;j<map.getRoads().size();j++) {//boucle de rafraichissement
                     map.getRoads().get(j).avancerFrame(50);
-                    draw.removecar();
-                    draw.drawcar(map);
                 }
+                draw.removecar();
+                draw.drawcar(map);
 
             }
         }.start();
