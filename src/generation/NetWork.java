@@ -101,7 +101,6 @@ public class NetWork implements java.io.Serializable{
             }
         }while(stillCrossings);
 
-
         //verifie si une route peut pointer vers une nouvelle inteersections plus proche pour limiter les intersections
         /*for (int a = 0; a<this.roads.size(); a++) {
             Road r = this.roads.get(a);
@@ -131,18 +130,6 @@ public class NetWork implements java.io.Serializable{
         double equation = Math.abs(a*x+b*y+c)/Math.sqrt(Math.pow(a,2)+Math.pow(b,2));
 
         return equation;
-    }
-
-    private void updateIntersection(Road r){//check et supprime les routes qui sont dans des intersections, supprime l'intersection si elle ne contient qu'une route
-        for(Intersection i : this.cross){
-            if(i.roads.contains(r)){
-                if(i.roads.size()==2){
-                    this.cross.remove(i);
-                } else {
-                    i.roads.remove(r);
-                }
-            }
-        }
     }
 
     private boolean areLink(Node a, Node b){
@@ -214,21 +201,11 @@ public class NetWork implements java.io.Serializable{
                 y = a.getEquationCarthesienneReduite()[0] * x + a.getEquationCarthesienneReduite()[1];
             }
 
-            System.out.println("De " + a.getStart().getName() + " a " + a.getEnd().getName() + " , Soit ["+a.getEquationCarthesienneReduite()[0] +", "+a.getEquationCarthesienneReduite()[1] +", "+a.getEquationCarthesienneReduite()[2]);
-            System.out.println("De " + b.getStart().getName() + " a " + b.getEnd().getName() + " , Soit ["+b.getEquationCarthesienneReduite()[0] +", "+b.getEquationCarthesienneReduite()[1] +", "+b.getEquationCarthesienneReduite()[2]);
-            System.out.println("Intersection : ( "+x+" ; "+y+" )");
+            //System.out.println("De " + a.getStart().getName() + " a " + a.getEnd().getName() + " , Soit ["+a.getEquationCarthesienneReduite()[0] +", "+a.getEquationCarthesienneReduite()[1] +", "+a.getEquationCarthesienneReduite()[2]);
+            //System.out.println("De " + b.getStart().getName() + " a " + b.getEnd().getName() + " , Soit ["+b.getEquationCarthesienneReduite()[0] +", "+b.getEquationCarthesienneReduite()[1] +", "+b.getEquationCarthesienneReduite()[2]);
+            //System.out.println("Intersection : ( "+x+" ; "+y+" )");
 
             Intersection i = new Intersection(Math.round(x), Math.round(y));
-            boolean t = false;
-            boolean u = false;
-            boolean p = false;
-            boolean o = false;
-            if(b.getStart().getName() == "amien"){
-                t = !i.equals(a.getStart());
-                u = !i.equals(a.getEnd());
-                p = !i.equals(b.getStart());
-                o = !i.equals(b.getEnd());
-            }
 
             if(!i.equals(a.getStart()) && !i.equals(a.getEnd()) && !i.equals(b.getStart()) && !i.equals(b.getEnd()) && x != NaN && y !=NaN) {//on verifie que l'interection n'est pas un ville
                 double [] xTaba = {a.getStart().getX(),a.getEnd().getX()};
@@ -253,6 +230,7 @@ public class NetWork implements java.io.Serializable{
                     this.roads.remove(a);
                     this.roads.remove(b);
 
+                    i.sortList();
                     return i;
                 }
             } else {
@@ -268,15 +246,6 @@ public class NetWork implements java.io.Serializable{
         a.addRoad(r);
         b.addRoad(r);
     }
-
-    public void addRoad(City a, City b,Road.TypeRoute t){
-        try{
-            this.addNewRoad(a,b,t);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
 
     public void print(){
         System.out.println("This network is composed by "+this.cities.size()+" cities which are :");

@@ -1,8 +1,13 @@
-import java.util.TreeMap;
+import javafx.util.Pair;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Intersection extends Node {
 
     private TypeIntersection typeIntersection;
+
+    private ArrayList<Double> angles;
 
     public enum TypeIntersection{
         PRIORITY, TRAFICCIRCLE, LIGHT, RIGHTPRIORITY
@@ -36,32 +41,40 @@ public class Intersection extends Node {
     @Override
     public void addRoad(Road r){
         super.addRoad(r);
-        //this.sortList();
-        this.typeIntersection = this.updateStatue();
+        this.sortList();
+        this.typeIntersection = this.updateStatus();
     }
 
-    private double angleRoad(Road r){//donne l'angle entre une route et une intersection
-        double ima = r.getStart().getY()-this.y;
-        double real = r.getStart().getX() - this.x;
-        double abs = Math.sqrt(Math.pow(ima,2)+Math.pow(real,2));
+    public double angleRoad(Road r){//donne l'angle entre une route et une intersection
+        Node otherPoint = (r.getEnd().equals(this)) ? r.getStart() : r.getEnd();
 
-        double theta = Math.atan(ima/(real+abs));
+        double ima = otherPoint.getY()-this.y;
+        double real = otherPoint.getX() - this.x;
 
-        return theta;
+        if(real == 0 && ima > 0) return Math.PI/2;
+        if(real == 0 && ima < 0) return 3*Math.PI/2;
+        if(real > 0 && ima == 0) return 0;
+        if(real < 0 && ima == 0) return Math.PI;
+
+        if(real > 0 && ima > 0) return Math.atan(ima/real);
+        if(real < 0 && ima > 0) return Math.PI - Math.atan(ima/(-1*real));
+        if(real < 0 && ima < 0) return Math.PI + Math.atan(ima/real);
+        if(real > 0 && ima < 0) return -1 * Math.atan((-1*ima)/real);
+
+        return 0;
     }
 
-    private void sortList(){
-        TreeMap <Double, Road> map = new TreeMap<>();//map auto triee
-        for (Road r: this.roads ) {//pour chaque route on calcule l'angle entre cette derniere et l'intersection
-            Double theta = this.angleRoad(r);
-            map.put(theta,r);
+    public void sortList(){
+        for (int i = 0; i < this.roads.size(); i++) {//pour chaque route on calcule l'angle entre cette derniere et l'intersection et nous les trions par ce biais (des plus grands angles aux plus petits pour les priorites a droite)
+            for(int j = 0; j < this.roads.size() - i - 1; j++){
+                if(this.angleRoad(this.roads.get(j)) > this.angleRoad(this.roads.get(j+1))){
+                    Collections.swap(this.roads, j, j+1);
+                }
+            }
         }
-        for( int i =0 ; i<this.roads.size(); i++){
-            this.roads.set(i,(Road)map.values().toArray()[i]);//on vient entierement modifier la liste de routes pour qu'elles soient triee par ordre de prio a droite
-        }
     }
 
-    private TypeIntersection updateStatue (){//change le type d'intersection
+    private TypeIntersection updateStatus (){//change le type d'intersection
         if(this.roads.size() == 4){
             if(this.roads.get(0).getType()==this.roads.get(1).getType()){//si les deux routes sont de meme type alors ca sera une priorite a droite
                 return this.typeIntersection.RIGHTPRIORITY;
@@ -79,6 +92,4 @@ public class Intersection extends Node {
 
         return this.typeIntersection.LIGHT;//par defaut ca sera des feux
     }
-
-    //travail ici Antoine
 }

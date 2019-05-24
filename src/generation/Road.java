@@ -119,9 +119,6 @@ public class Road extends Infrastructure implements java.io.Serializable{
         this.equationCarthesienneReduite = equationCarthesienneReduite;
     }
 
-
-    //partie d'antoine
-    //si ca merde c'est ici
     // Les valeurs de vitesses seront estimees en km/h
 
     // Enumeration des types de routes
@@ -166,11 +163,21 @@ public class Road extends Infrastructure implements java.io.Serializable{
 
 
     public void ajouterVoitureAller(Voiture voiture, int voie){ // Entree d'une voiture dans le sens de l'aller
-        this.voiesAller.get(voie).add(0,voiture);
+        if(this.voiesAller.get(voie).size() == 0) {
+            this.voiesAller.get(voie).add(0, voiture);
+            return;
+        }
+        if(this.voiesAller.get(voie).get(0).getPositionActuelle() > this.distanceSecurite)
+            this.voiesAller.get(voie).add(0,voiture);
     }
 
     public void ajouterVoitureRetour(Voiture voiture, int voie){ // Entree d'une voiture dans le sens du retour
-        this.voiesRetour.get(voie).add(0,voiture);
+        if(this.voiesRetour.get(voie).size() == 0) {
+            this.voiesRetour.get(voie).add(0, voiture);
+            return;
+        }
+        if(this.voiesRetour.get(voie).get(0).getPositionActuelle() > this.distanceSecurite)
+            this.voiesRetour.get(voie).add(0,voiture);
     }
 
     public int[] voituresAlentoursPosition(ArrayList< Voiture > voie, double position){ // Retourne les indexs des voitures situes avant et apres la position donnee dans la voie demandee
@@ -401,7 +408,7 @@ public class Road extends Infrastructure implements java.io.Serializable{
                                     for (int k2 = 0; k2 < voieTemp.size(); k2++) {
                                         if(voieTemp.get(k2).size() == 0){
                                             continue;
-                                        }else if (voieTemp.get(k2).get(voieTemp.get(k2).size() - 1).getPositionActuelle() > followingRoad.getLongueur() - 2 * followingRoad.getDistanceSecurite()) {
+                                        }else if (voieTemp.get(k2).get(voieTemp.get(k2).size() - 1).getPositionActuelle() > tabRoads.get(k).getLongueur() - 2 * tabRoads.get(k).getDistanceSecurite()) {
                                             voieLibre = false;
                                         }
                                     }
@@ -410,7 +417,7 @@ public class Road extends Infrastructure implements java.io.Serializable{
                                     for (int k2 = 0; k2 < voieTemp.size(); k2++) {
                                         if(voieTemp.get(k2).size() == 0){
                                             continue;
-                                        }else if (voieTemp.get(k2).get(voieTemp.get(k2).size() - 1).getPositionActuelle() > followingRoad.getLongueur() - 2 * followingRoad.getDistanceSecurite()) {
+                                        }else if (voieTemp.get(k2).get(voieTemp.get(k2).size() - 1).getPositionActuelle() > tabRoads.get(k).getLongueur() - 2 * tabRoads.get(k).getDistanceSecurite()) {
                                             voieLibre = false;
                                         }
                                     }
@@ -585,7 +592,6 @@ public class Road extends Infrastructure implements java.io.Serializable{
                                 }
                             }
 
-                            // Si nous sommes dans la zone de ralentissement
                         } else { // Si nous n'arrivons pas en fin de route a la prochaine frame
                             voituret.setAccelerationActuelle(voituret.getAccelerationMax());
                             voituret.setVitesseActuelle(voituret.getVitesseActuelle() + temps / 3600 * voituret.getAccelerationActuelle());
