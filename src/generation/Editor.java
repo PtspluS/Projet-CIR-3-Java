@@ -13,6 +13,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+import java.util.ArrayList;
+
 public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
 
 
@@ -108,10 +110,27 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
             public void handle(ActionEvent event) {
                 for(City c : net.getCities()){//On met a l'echelle la position des ville
                     double tmp=c.getX()/(scaler)*(windowwidth-830)+15;
-                    tmp+=-800;
+                    tmp-=800;
                     tmp=(tmp-15) * (scaler) / (windowwidth - 830);
                     c.setX(tmp);
                 }
+                ArrayList <Road> tmproad=new ArrayList();
+                for(Road r:net.getRoads()) {
+                    System.out.println(r.getEquationCarthesienneReduite()[0]);
+                    System.out.println(r.getEquationCarthesienneReduite()[1]);
+                    Road route = new Road(r.getStart(), r.getEnd(), r.getType());
+                    tmproad.add(route);
+                }
+                for(int i=0;i<net.getRoads().size();i++){
+                net.removeRoute(net.getRoads().get(i));
+                i=0;
+                }
+                for(Road rt:tmproad){
+                    System.out.println(rt.getEquationCarthesienneReduite()[0]);
+                    System.out.println(rt.getEquationCarthesienneReduite()[1]);
+                    net.addRoad(rt.getStart(),rt.getEnd(),rt.getType());
+                }
+
                 root.getChildren().clear();
                 vroum(root,windowwidth,windowheight,net,mapwidth,mapheight);//On lance la simulation
             }})
@@ -149,7 +168,7 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
                     if(ville.getX()!=-1){//si il y a eu clique sur une ville
                         for(int r=0;r<net.getRoads().size();r++){//On parcourt les routes pour savoir si la ville etait relié a une route
                             if(net.getRoads().get(r).getStart()==ville || net.getRoads().get(r).getEnd()==ville ){
-                                net.removeRoad(net.getRoads().get(r));//on retire la route
+                                net.removeRoute(net.getRoads().get(r));//on retire la route
                                 r=-1;
                             }}
                         net.removeCity(ville);//on retire la route
@@ -215,7 +234,7 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
                                 boolean exist=false;
                                 for( int r=0;r<net.getRoads().size() ;r++ ){//On supprime la route
                                     if(net.getRoads().get(r).getStart()==ville && net.getRoads().get(r).getEnd()==villesave || net.getRoads().get(r).getStart()==villesave && net.getRoads().get(r).getEnd()==ville ){
-                                        net.removeRoad(net.getRoads().get(r));
+                                        net.removeRoute(net.getRoads().get(r));
                                         refresh(drawplace,draw,net);
                                         villesave=new City(-1,-1);
 
@@ -271,13 +290,15 @@ public class Editor {//C est l'objet qui gere l'edition d'une nouvelle map
 
 
     public void vroum(BorderPane root,int windowwidth,int windowheight,NetWork map,double mapwidth,double mapheight){ //Fonction qui gere la simulation
-
+map.upDateMap();
 
         //creaton de la fenetre
         Drawing draw=new Drawing(windowwidth,windowheight,mapwidth ,mapheight);//creation d'un objet dessin
         root.getChildren().add(draw);
         draw.drawroad(map);//dessin des routes
         draw.drawcity(map);//dessin des villes
+        draw.drawintter(map);
+
         new AnimationTimer()//gestion de l'animation
         {
             public int delay = 0;

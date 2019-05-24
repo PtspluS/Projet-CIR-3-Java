@@ -181,5 +181,23 @@ public class Drawing extends Parent {// Classe qui rassemble tout es objets a de
        this.getChildren().add(r);
 
     }
+    public void drawintter(NetWork map){
+        Group cross = new Group();//Cration du groupe de dessin de ville
+        this.getChildren().add(cross);
+        for(Intersection i:map.getCross()){
+
+            Circle cercle = new Circle();//les villes sont des cercles
+
+            cercle.setCenterX(scaleX(i.getX()));
+            cercle.setCenterY(scaleY(i.getY()));
+            cercle.setRadius(5);
+            cercle.setFill(Color.GRAY);
+            cross.getChildren().add(cercle);
+
+
+        }
+
+
+    }
 
 }

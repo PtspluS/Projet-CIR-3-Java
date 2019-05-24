@@ -2,7 +2,8 @@ package generation;
 
 import java.util.ArrayList;
 
-public class City extends Node {
+
+public class City extends Node implements java.io.Serializable{
 
 
     public City (){

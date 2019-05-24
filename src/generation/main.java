@@ -41,10 +41,8 @@ ArrayList<City> citytab=new ArrayList();
         citytab.add(new City(499,312,"Paris"));
         citytab.add(new City(499,25,"Marseille"));
         citytab.add( new City(321,100,"Tourcoing"));
-        citytab.add( new City(0,50,"B"));
-        citytab.add( new City(400,0,"B"));
-        citytab.add( new City(250,300,"B"));
-        NetWork map = new NetWork(true,new City(0,0,"Lille"),new City(100,90,"Tourcoing"),new City(500,100,"Paris"),new City(400,300,"Marseille"), new City(321,500,"Tourcoing"));
+
+        NetWork map = new NetWork(true,citytab);
 
 
 

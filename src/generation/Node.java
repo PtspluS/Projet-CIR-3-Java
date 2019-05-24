@@ -1,9 +1,11 @@
 package generation;
+import generation.Infrastructure;
+import generation.Road;
 
 import java.util.ArrayList;
 
-public abstract class Node extends Infrastructure {
-    private ArrayList<Road> roads = new ArrayList<>();
+public abstract class Node extends Infrastructure implements java.io.Serializable{
+    protected ArrayList<Road> roads = new ArrayList<>();
 
     public ArrayList<Road> getRoads() {
         return roads;
@@ -16,7 +18,6 @@ public abstract class Node extends Infrastructure {
     public void addRoad(Road road) {
         this.roads.add(road);
         System.out.print("New road added : ");
-        road.print();
     }
 
     public void removeRoad(Road road) {

@@ -1,6 +1,5 @@
 package generation;
-
-public abstract class Infrastructure {
+public abstract class Infrastructure implements java.io.Serializable{
     protected double x;
     protected double y;
     protected String name;
@@ -35,7 +34,7 @@ public abstract class Infrastructure {
 
 
     public boolean equals(Infrastructure a){
-        if(this.x != a.getX() && this.y != a.getY()){
+        if(this.x != a.getX() || this.y != a.getY()){
             return false;
         }else {
             return true;
